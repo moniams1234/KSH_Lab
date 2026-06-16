@@ -1,0 +1,1030 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KSH Lab - nauka spółek i transakcji</title>
+  <style>
+    :root {
+      --ink: #18202a;
+      --muted: #5d6875;
+      --line: #d9e0e8;
+      --panel: #ffffff;
+      --bg: #f4f7f9;
+      --accent: #0d7a75;
+      --accent-2: #9b4d1f;
+      --good: #237a3b;
+      --bad: #b22d35;
+      --warn: #8d650f;
+      --shadow: 0 18px 42px rgba(25, 38, 52, .12);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      color: var(--ink);
+      background:
+        linear-gradient(120deg, rgba(13,122,117,.12), transparent 34%),
+        linear-gradient(300deg, rgba(155,77,31,.13), transparent 32%),
+        var(--bg);
+    }
+
+    header {
+      min-height: 36vh;
+      display: grid;
+      align-items: end;
+      padding: 42px clamp(18px, 5vw, 72px) 26px;
+      background:
+        radial-gradient(circle at 78% 20%, rgba(255,255,255,.20), transparent 22%),
+        linear-gradient(130deg, #19363c 0%, #20464b 48%, #6f3f28 100%);
+      color: #fff;
+      overflow: hidden;
+      position: relative;
+    }
+
+    header::after {
+      content: "sp.j.   sp.k.   sp. z o.o.   PSA   SA   łączenie   podział   przekształcenie";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 10px clamp(18px, 5vw, 72px);
+      color: rgba(255,255,255,.62);
+      background: rgba(0,0,0,.16);
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .hero {
+      max-width: 1060px;
+      padding-bottom: 28px;
+      position: relative;
+      z-index: 1;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(2rem, 4vw, 4.3rem);
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      max-width: 760px;
+      margin: 0;
+      font-size: 1.05rem;
+      color: rgba(255,255,255,.88);
+    }
+
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 24px clamp(14px, 3vw, 28px) 48px;
+    }
+
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      padding: 12px 0;
+      background: rgba(244,247,249,.92);
+      backdrop-filter: blur(10px);
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+
+    button, select {
+      font: inherit;
+    }
+
+    .tab, .icon-btn, .answer, .mode-btn {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--ink);
+      min-height: 42px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: .16s ease;
+    }
+
+    .tab {
+      flex: 0 0 auto;
+      padding: 0 14px;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+
+    .tab:hover, .icon-btn:hover, .answer:hover, .mode-btn:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .tab.active, .mode-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .icon-btn {
+      width: 44px;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(280px, .75fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    section, .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    section {
+      padding: clamp(18px, 3vw, 28px);
+    }
+
+    h2, h3 {
+      margin: 0;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      font-size: clamp(1.65rem, 3vw, 2.35rem);
+    }
+
+    h3 {
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 16px 0 18px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      position: relative;
+      min-height: 30px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #eef5f4;
+      color: #174d4a;
+      font-weight: 650;
+      font-size: .88rem;
+    }
+
+    .law-tip {
+      cursor: help;
+      text-decoration: underline;
+      text-decoration-style: dotted;
+      text-underline-offset: 3px;
+    }
+
+    .law-tip::after {
+      content: attr(data-law);
+      position: absolute;
+      left: 0;
+      bottom: calc(100% + 8px);
+      z-index: 20;
+      width: min(310px, 80vw);
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: #17222b;
+      color: #fff;
+      font-size: .82rem;
+      font-weight: 600;
+      line-height: 1.35;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(4px);
+      transition: .12s ease;
+      white-space: normal;
+    }
+
+    .law-tip:hover::after,
+    .law-tip:focus::after {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .summary {
+      color: var(--muted);
+      line-height: 1.55;
+      margin: 0 0 20px;
+    }
+
+    .facts {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin: 18px 0;
+    }
+
+    .fact {
+      position: relative;
+      border-left: 4px solid var(--accent);
+      background: #f7fafb;
+      padding: 12px;
+      border-radius: 6px;
+      min-height: 94px;
+    }
+
+    .fact strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: .86rem;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .list {
+      margin: 0;
+      padding-left: 20px;
+      line-height: 1.55;
+    }
+
+    .side {
+      display: grid;
+      gap: 14px;
+    }
+
+    .card {
+      padding: 16px;
+    }
+
+    .meter {
+      height: 10px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e5ebf0;
+      margin-top: 10px;
+    }
+
+    .meter span {
+      display: block;
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      transition: width .25s ease;
+    }
+
+    .flash {
+      min-height: 156px;
+      display: grid;
+      align-content: center;
+      gap: 10px;
+      border: 1px dashed #b6c4ce;
+      background: #fbfcfd;
+      padding: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .flash small { color: var(--muted); }
+
+    .answers {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .answer {
+      text-align: left;
+      padding: 11px 12px;
+    }
+
+    .answer.good {
+      border-color: var(--good);
+      background: #edf8f0;
+    }
+
+    .answer.bad {
+      border-color: var(--bad);
+      background: #fff1f2;
+    }
+
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .compare select {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0 10px;
+      background: white;
+    }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 14px;
+      font-size: .94rem;
+    }
+
+    .compare-table th, .compare-table td {
+      border-top: 1px solid var(--line);
+      padding: 10px 8px;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    .modes {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .mode-btn {
+      padding: 0 8px;
+      font-weight: 650;
+    }
+
+    .callout {
+      border-left: 4px solid var(--warn);
+      background: #fff8e8;
+      padding: 12px;
+      border-radius: 6px;
+      line-height: 1.5;
+      margin-top: 16px;
+    }
+
+    .source-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 36px;
+      margin-top: 12px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--accent);
+      background: #f8fbfb;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .source-link:hover {
+      border-color: var(--accent);
+      background: #eef7f6;
+    }
+
+    footer {
+      color: var(--muted);
+      font-size: .9rem;
+      padding-top: 20px;
+    }
+
+    @media (max-width: 860px) {
+      .toolbar, .grid, .facts, .compare {
+        grid-template-columns: 1fr;
+      }
+
+      .icon-btn {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="hero">
+      <h1>KSH Lab</h1>
+      <p class="lead">Interaktywna nauka typów spółek handlowych, odpowiedzialności wspólników, organów oraz transakcji restrukturyzacyjnych: łączenia, podziału i przekształcenia.</p>
+    </div>
+  </header>
+
+  <main>
+    <div class="toolbar">
+      <nav class="tabs" id="tabs" aria-label="Karty nauki"></nav>
+      <button class="icon-btn" id="shuffle" title="Losuj kartę" aria-label="Losuj kartę">↻</button>
+    </div>
+
+    <div class="grid">
+      <section aria-live="polite">
+        <div class="modes">
+          <button class="mode-btn active" data-mode="learn">Nauka</button>
+          <button class="mode-btn" data-mode="quiz">Quiz</button>
+          <button class="mode-btn" data-mode="compare">Porównaj</button>
+        </div>
+        <div id="content"></div>
+      </section>
+
+      <aside class="side">
+        <div class="card">
+          <h3>Postęp sesji</h3>
+          <div id="progressText">0 z 0 kart przejrzanych</div>
+          <div class="meter"><span id="progressBar"></span></div>
+        </div>
+
+        <div class="card">
+          <h3>Fiszka</h3>
+          <div class="flash" id="flash" tabindex="0" role="button" aria-label="Pokaż odpowiedź fiszki">
+            <small>Kliknij, aby odwrócić</small>
+            <strong id="flashQ"></strong>
+            <span id="flashA"></span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Mapa tematów</h3>
+          <ul class="list">
+            <li>Spółki osobowe: jawna, partnerska, komandytowa, komandytowo-akcyjna.</li>
+            <li>Spółki kapitałowe: z o.o., prosta akcyjna, akcyjna.</li>
+            <li>Operacje: łączenie, podział, przekształcenie, aport, umorzenie udziałów.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+
+    <footer>
+      Materiał ma charakter edukacyjny. Przy pracy z konkretnym przypadkiem sprawdź aktualne przepisy KSH i dokumenty źródłowe.
+    </footer>
+  </main>
+
+  <script>
+    const kshSourceUrl = "https://przepisy.gofin.pl/przepisy,2,9,9,208,,,ustawa-z-dnia-15092000-r-kodeks-spolek-handlowych.html";
+
+    const lawRefs = {
+      "spółka osobowa": "KSH art. 4 § 1 pkt 1 oraz art. 8 § 1 - katalog spółek osobowych i ich zdolność prawna.",
+      "spółka kapitałowa": "KSH art. 4 § 1 pkt 2 - spółka z o.o., prosta spółka akcyjna i spółka akcyjna.",
+      "organy": "KSH: sp. z o.o. art. 201, 212-213, 227; SA art. 368, 382, 393; PSA art. 300^52 i nast.",
+      "podział": "KSH art. 4 § 1 oraz art. 8 - podstawowy podział i zdolność prawna spółek.",
+      "pytanie kontrolne": "KSH art. 31, 95, 111, 151, 299 i 494 - odpowiedzialność zależy od typu spółki i roli osoby.",
+      "druga oś": "KSH art. 154, 300^3, 308 oraz przepisy o organach - formalizm rośnie w spółkach kapitałowych.",
+      "praktyka": "KSH wymaga analizy typu spółki, firmy, reprezentacji, organów i odpowiedzialności w konkretnym stanie faktycznym.",
+      "katalog": "KSH art. 4 § 1 pkt 1-2 - ustawowy katalog spółek osobowych i kapitałowych.",
+      "majątek": "KSH art. 8 § 1 - spółka osobowa może nabywać prawa i zaciągać zobowiązania we własnym imieniu.",
+      "odpowiedzialność": "KSH: art. 31, 95, 111, 151, 299, 494 - zakres zależy od typu spółki i roli danej osoby.",
+      "właściciele": "KSH: wspólnicy w sp. z o.o.; akcjonariusze w PSA i SA, z prawami określonymi ustawą i umową/statutem.",
+      "formalizm": "KSH: przepisy o uchwałach, organach, kapitale i rejestracji są najbardziej rozbudowane w spółkach akcyjnych.",
+      "reprezentacja": "KSH art. 29, 96, 117, 137, 201, 300^52 i 368 - reprezentacja zależy od typu spółki.",
+      "cel": "KSH art. 551 i nast. - przekształcenie służy zmianie formy prawnej spółki.",
+      "tryby": "KSH art. 492 dla łączenia; art. 529 dla podziału; art. 551 dla przekształcenia.",
+      "dokumenty": "KSH: art. 498-499, 533-534, 557-558 - plany i załączniki przy reorganizacjach.",
+      "skutek": "KSH art. 493-494, 530-531, 552-553 - skutki reorganizacji wiążą się z wpisem i sukcesją/kontynuacją.",
+      "ryzyko": "KSH oraz przepisy powiązane wymagają badania ochrony wspólników, wierzycieli, wyceny i rejestracji.",
+      "przedmiot": "KSH art. 14 - ograniczenia dotyczące wkładów, w tym wkładów niepieniężnych.",
+      "firma": "KSH art. 24, 90, 104, 127, 160, 300^6, 305 - elementy firmy zależnie od typu spółki.",
+      "odpowiedzialność subsydiarna": "KSH art. 31 - odpowiedzialność wspólnika spółki jawnej po bezskutecznej egzekucji z majątku spółki.",
+      "brak kapitału": "KSH art. 4 i przepisy o spółkach osobowych - brak konstrukcji kapitału zakładowego jak w spółkach kapitałowych.",
+      "wolne zawody": "KSH art. 86-88 - spółka partnerska jest przeznaczona do wykonywania wolnego zawodu.",
+      "partnerzy": "KSH art. 86 i art. 95 - status partnera i szczególna odpowiedzialność.",
+      "ograniczenie ryzyka": "KSH art. 95 § 1 - partner nie odpowiada za określone błędy zawodowe innych partnerów.",
+      "komplementariusz": "KSH art. 102, 117 i 125 - wspólnik prowadzący sprawy i ponoszący pełną odpowiedzialność.",
+      "komandytariusz": "KSH art. 102 oraz art. 111-112 - odpowiedzialność komandytariusza i suma komandytowa.",
+      "suma komandytowa": "KSH art. 111-112 - granica odpowiedzialności komandytariusza wobec wierzycieli.",
+      "akcjonariusz": "KSH art. 126 i art. 301; w SKA akcjonariusz ma inną pozycję niż komplementariusz.",
+      "walne zgromadzenie": "KSH art. 393 dla SA; art. 126 i nast. dla SKA; kompetencje zależą od typu spółki.",
+      "udziały": "KSH art. 152-154 oraz art. 174 i nast. - udziały i kapitał zakładowy spółki z o.o.",
+      "zarząd": "KSH art. 201 dla sp. z o.o.; art. 368 dla SA; zarząd prowadzi sprawy i reprezentuje spółkę.",
+      "kapitał zakładowy": "KSH art. 154 dla sp. z o.o.; art. 308 dla SA; w PSA występuje kapitał akcyjny.",
+      "akcje beznominałowe": "KSH art. 300^2-300^3 - akcje PSA nie mają wartości nominalnej.",
+      "startup": "KSH art. 300^1 i nast. - PSA jako elastyczna forma kapitałowa.",
+      "rada dyrektorów": "KSH art. 300^73 i nast. - w PSA możliwy model z radą dyrektorów.",
+      "akcje": "KSH art. 301, 302 i 328 i nast. - konstrukcja akcji w spółce akcyjnej.",
+      "rada nadzorcza": "KSH art. 213 dla sp. z o.o. w określonych przypadkach; art. 382 dla SA jako organ obowiązkowy.",
+      "fuzja": "KSH art. 491-493 - dopuszczalność, tryby i dzień połączenia.",
+      "plan połączenia": "KSH art. 498-499 - plan połączenia i jego elementy.",
+      "sukcesja": "KSH art. 494 - sukcesja uniwersalna przy połączeniu.",
+      "wydzielenie": "KSH art. 529 § 1 pkt 4 - podział przez wydzielenie.",
+      "rozdzielenie majątku": "KSH art. 528-531 - zasady podziału i następstwo prawne.",
+      "plan podziału": "KSH art. 533-534 - plan podziału i jego treść.",
+      "zmiana formy": "KSH art. 551 - dopuszczalność przekształcenia spółki.",
+      "kontynuacja": "KSH art. 553 - spółce przekształconej przysługują prawa i obowiązki spółki przekształcanej.",
+      "plan przekształcenia": "KSH art. 557-558 - plan przekształcenia i załączniki.",
+      "wkład niepieniężny": "KSH art. 14, art. 158 i art. 309 - zasady wnoszenia wkładów niepieniężnych.",
+      "aport": "KSH art. 14 oraz przepisy szczególne dla danego typu spółki, np. art. 158 i art. 309.",
+      "dobrowolne": "KSH art. 199 dla udziałów w sp. z o.o.; art. 359 dla akcji w SA.",
+      "przymusowe": "KSH art. 199 i art. 359 - umorzenie wymaga podstawy w umowie albo statucie.",
+      "wynagrodzenie": "KSH art. 199 i art. 359 - zasady wynagrodzenia przy umorzeniu."
+    };
+
+    const keyArticles = {
+      intro: ["art. 4 § 1 KSH - definicje i katalog spółek", "art. 8 KSH - zdolność prawna spółek osobowych"],
+      personal: ["art. 4 § 1 pkt 1 KSH - spółki osobowe", "art. 8 KSH - działanie we własnym imieniu"],
+      capital: ["art. 4 § 1 pkt 2 KSH - spółki kapitałowe", "art. 11 KSH - spółki kapitałowe w organizacji", "art. 151, 300^1, 301 KSH - podstawowe przepisy typów kapitałowych"],
+      organs: ["art. 201, 212-213, 227 KSH - organy sp. z o.o.", "art. 300^52 i nast. KSH - organy PSA", "art. 368, 382, 393 KSH - organy SA"],
+      spj: ["art. 22 KSH - definicja spółki jawnej", "art. 29 KSH - reprezentacja", "art. 31 KSH - odpowiedzialność subsydiarna", "art. 39 KSH - prowadzenie spraw"],
+      spp: ["art. 86 KSH - definicja spółki partnerskiej", "art. 88 KSH - wolne zawody", "art. 95 KSH - odpowiedzialność partnera", "art. 96-97 KSH - reprezentacja i zarząd"],
+      spk: ["art. 102 KSH - definicja spółki komandytowej", "art. 104 KSH - firma", "art. 111-112 KSH - suma komandytowa", "art. 117 KSH - reprezentacja"],
+      ska: ["art. 125 KSH - definicja SKA", "art. 126 KSH - przepisy stosowane odpowiednio", "art. 137 KSH - reprezentacja", "art. 140-142 KSH - walne zgromadzenie i rada nadzorcza"],
+      zoo: ["art. 151 KSH - definicja sp. z o.o.", "art. 154 KSH - kapitał zakładowy", "art. 201 KSH - zarząd", "art. 227 KSH - zgromadzenie wspólników", "art. 299 KSH - odpowiedzialność członków zarządu"],
+      psa: ["art. 300^1 KSH - utworzenie PSA", "art. 300^2-300^3 KSH - akcje i kapitał akcyjny", "art. 300^52 i nast. KSH - organy", "art. 300^73 i nast. KSH - rada dyrektorów"],
+      sa: ["art. 301 KSH - zawiązanie SA", "art. 304 KSH - statut", "art. 308 KSH - kapitał zakładowy", "art. 368 KSH - zarząd", "art. 382 KSH - rada nadzorcza", "art. 393 KSH - walne zgromadzenie"],
+      merger: ["art. 491 KSH - zdolność łączenia", "art. 492 KSH - tryby połączenia", "art. 493 KSH - dzień połączenia", "art. 494 KSH - sukcesja", "art. 498-499 KSH - plan połączenia"],
+      division: ["art. 528 KSH - dopuszczalność podziału", "art. 529 KSH - tryby podziału", "art. 531 KSH - sukcesja przy podziale", "art. 533-534 KSH - plan podziału"],
+      transform: ["art. 551 KSH - dopuszczalność przekształcenia", "art. 552 KSH - dzień przekształcenia", "art. 553 KSH - kontynuacja praw i obowiązków", "art. 557-558 KSH - plan przekształcenia"],
+      aport: ["art. 14 KSH - wkłady i ograniczenia", "art. 158 KSH - aport w sp. z o.o.", "art. 309 KSH - wkłady w SA"],
+      redemption: ["art. 199 KSH - umorzenie udziałów w sp. z o.o.", "art. 359 KSH - umorzenie akcji w SA"]
+    };
+
+    const cards = [
+      {
+        id: "intro",
+        title: "Mapa KSH: od czego zacząć",
+        type: "Wprowadzenie",
+        tags: ["spółka osobowa", "spółka kapitałowa", "organy"],
+        summary: "KSH porządkuje spółki według konstrukcji osobowej albo kapitałowej. Najszybsza metoda nauki to porównywanie odpowiedzialności, sposobu reprezentacji, organów, kapitału oraz skutków zmian organizacyjnych.",
+        facts: {
+          "Podział": "Spółki osobowe opierają się silniej na osobach wspólników; kapitałowe na kapitale, udziałach albo akcjach i organach.",
+          "Pytanie kontrolne": "Kto odpowiada wobec wierzyciela: spółka, wspólnik, komplementariusz, członek zarządu czy nikt z nich co do zasady?",
+          "Druga oś": "Czy dana forma wymaga kapitału, organów, uchwał i formalnej rejestracji zmian?",
+          "Praktyka": "Dla każdej spółki zapamiętaj: firma, wspólnicy, odpowiedzialność, reprezentacja, organy, kapitał."
+        },
+        remember: ["Najpierw rozdziel spółki osobowe i kapitałowe.", "Potem odróżnij odpowiedzialność wspólników od odpowiedzialności członków organów.", "Przy transakcjach zawsze szukaj planu, uchwał, ochrony wierzycieli i wpisu do rejestru."],
+        flash: ["Jakie są dwie główne grupy spółek handlowych w KSH?", "Spółki osobowe i spółki kapitałowe."]
+      },
+      {
+        id: "personal",
+        title: "Spółki osobowe - wspólna logika",
+        type: "Wprowadzenie",
+        tags: ["spółka osobowa", "firma", "odpowiedzialność subsydiarna"],
+        summary: "Spółki osobowe mają zdolność prawną, działają pod własną firmą i zwykle są silnie związane z osobami wspólników. Nie mają osobowości prawnej, ale mogą nabywać prawa, zaciągać zobowiązania, pozywać i być pozywane.",
+        facts: {
+          "Katalog": "Spółka jawna, partnerska, komandytowa i komandytowo-akcyjna.",
+          "Majątek": "Majątek spółki jest odrębny od majątku wspólników.",
+          "Odpowiedzialność": "Zakres odpowiedzialności zależy od typu wspólnika i typu spółki.",
+          "Organy": "Zwykle działają wspólnicy; wyjątki i elementy korporacyjne pojawiają się szczególnie w SKA."
+        },
+        remember: ["Nie mów, że spółka osobowa jest tylko umową między wspólnikami.", "Zawsze ustal, czy wspólnik jest komplementariuszem, komandytariuszem, akcjonariuszem czy partnerem."],
+        flash: ["Czy spółka osobowa może nabywać prawa we własnym imieniu?", "Tak, wynika to ze zdolności prawnej spółki osobowej."]
+      },
+      {
+        id: "capital",
+        title: "Spółki kapitałowe - wspólna logika",
+        type: "Wprowadzenie",
+        tags: ["spółka kapitałowa", "zarząd", "kapitał zakładowy"],
+        summary: "Spółki kapitałowe mają osobowość prawną. Wspólnicy albo akcjonariusze co do zasady nie odpowiadają za zobowiązania spółki, a działanie spółki odbywa się przez organy.",
+        facts: {
+          "Katalog": "Spółka z o.o., prosta spółka akcyjna i spółka akcyjna.",
+          "Właściciele": "W sp. z o.o. występują wspólnicy i udziały; w PSA i SA akcjonariusze i akcje.",
+          "Odpowiedzialność": "Ryzyko właścicieli jest zasadniczo ograniczone, ale członkowie organów mogą ponosić szczególną odpowiedzialność.",
+          "Formalizm": "Im bliżej SA, tym większe znaczenie mają statut, organy, uchwały i procedury."
+        },
+        remember: ["Nie utożsamiaj kapitału zakładowego w sp. z o.o. i SA z kapitałem akcyjnym w PSA.", "Przy odpowiedzialności zarządu sp. z o.o. pamiętaj o art. 299 KSH."],
+        flash: ["Co jest podstawową różnicą względem spółek osobowych?", "Osobowość prawna, działanie przez organy i zasadnicze ograniczenie odpowiedzialności właścicieli."]
+      },
+      {
+        id: "organs",
+        title: "Organy spółek - szybka mapa",
+        type: "Wprowadzenie",
+        tags: ["organy", "zarząd", "rada nadzorcza", "walne zgromadzenie"],
+        summary: "Organy odpowiadają za prowadzenie spraw, reprezentację, nadzór i decyzje właścicielskie. W spółkach osobowych ich rola jest ograniczona, a w kapitałowych stanowią podstawowy mechanizm działania.",
+        facts: {
+          "Zarząd": "Prowadzi sprawy i reprezentuje spółkę z o.o. oraz SA; w PSA może wystąpić zarząd albo rada dyrektorów.",
+          "Rada nadzorcza": "W SA obowiązkowa; w sp. z o.o. wymagana tylko w określonych przypadkach albo gdy przewiduje to umowa.",
+          "Zgromadzenie": "Wspólnicy albo akcjonariusze podejmują uchwały w sprawach zastrzeżonych ustawą lub umową/statutem.",
+          "Reprezentacja": "Zawsze sprawdzaj KRS i umowę/statut, bo zasady reprezentacji mogą być zmodyfikowane."
+        },
+        remember: ["Organ nie jest tym samym co wspólnik.", "Kompetencje organów wynikają z KSH oraz umowy albo statutu.", "Uchwała bez właściwej kompetencji może być wadliwa."],
+        flash: ["Który organ jest obowiązkowy w SA jako organ nadzoru?", "Rada nadzorcza."]
+      },
+      {
+        id: "spj",
+        title: "Spółka jawna",
+        type: "Spółka osobowa",
+        tags: ["firma", "odpowiedzialność subsydiarna", "brak kapitału"],
+        summary: "Podstawowa spółka osobowa prowadząca przedsiębiorstwo pod własną firmą. Wspólnicy prowadzą sprawy spółki i reprezentują ją, chyba że umowa stanowi inaczej.",
+        facts: {
+          "Odpowiedzialność": "Wspólnicy odpowiadają solidarnie, subsydiarnie i bez ograniczenia.",
+          "Organy": "Brak klasycznych organów; działają wspólnicy.",
+          "Kapitał": "Brak minimalnego kapitału zakładowego.",
+          "Dobre skojarzenie": "Mała lub średnia działalność oparta na zaufaniu wspólników."
+        },
+        remember: ["Spółka ma zdolność prawną, ale nie ma osobowości prawnej.", "Kluczowe jest rozróżnienie majątku spółki i odpowiedzialności wspólników."],
+        flash: ["Kiedy wierzyciel może sięgnąć do majątku wspólnika spółki jawnej?", "Po bezskutecznej egzekucji z majątku spółki, z uwzględnieniem odpowiedzialności subsydiarnej."]
+      },
+      {
+        id: "spp",
+        title: "Spółka partnerska",
+        type: "Spółka osobowa",
+        tags: ["wolne zawody", "partnerzy", "ograniczenie ryzyka"],
+        summary: "Forma przeznaczona dla osób wykonujących wolne zawody. Pozwala ograniczyć odpowiedzialność partnera za błędy zawodowe innych partnerów.",
+        facts: {
+          "Odpowiedzialność": "Partner co do zasady nie odpowiada za zobowiązania powstałe wskutek wykonywania wolnego zawodu przez innych partnerów.",
+          "Organy": "Możliwy zarząd, ale nie zawsze wymagany.",
+          "Kapitał": "Brak minimalnego kapitału zakładowego.",
+          "Dobre skojarzenie": "Kancelarie, praktyki lekarskie, biura zawodów regulowanych."
+        },
+        remember: ["Nie każda działalność może działać jako spółka partnerska.", "Najważniejszy wyróżnik to związek z wolnymi zawodami."],
+        flash: ["Co odróżnia spółkę partnerską od jawnej?", "Przeznaczenie dla wolnych zawodów i szczególne zasady odpowiedzialności partnerów."]
+      },
+      {
+        id: "spk",
+        title: "Spółka komandytowa",
+        type: "Spółka osobowa",
+        tags: ["komplementariusz", "komandytariusz", "suma komandytowa"],
+        summary: "Łączy wspólnika zarządzającego z pełną odpowiedzialnością oraz inwestora o odpowiedzialności ograniczonej do sumy komandytowej.",
+        facts: {
+          "Odpowiedzialność": "Komplementariusz odpowiada bez ograniczenia; komandytariusz do wysokości sumy komandytowej.",
+          "Organy": "Prowadzenie spraw zwykle należy do komplementariuszy.",
+          "Kapitał": "Brak minimalnego kapitału zakładowego.",
+          "Dobre skojarzenie": "Model inwestor plus aktywny prowadzący biznes."
+        },
+        remember: ["Nazwisko komandytariusza w firmie może zwiększyć jego ryzyko odpowiedzialności.", "Suma komandytowa nie jest tym samym co wkład."],
+        flash: ["Kto prowadzi sprawy spółki komandytowej?", "Co do zasady komplementariusz."]
+      },
+      {
+        id: "ska",
+        title: "Spółka komandytowo-akcyjna",
+        type: "Spółka osobowa",
+        tags: ["akcjonariusz", "komplementariusz", "walne zgromadzenie"],
+        summary: "Hybryda spółki osobowej i elementów akcyjnych. Występują komplementariusze oraz akcjonariusze, a struktura jest bardziej sformalizowana.",
+        facts: {
+          "Odpowiedzialność": "Komplementariusz odpowiada bez ograniczenia; akcjonariusz co do zasady nie odpowiada za zobowiązania spółki.",
+          "Organy": "Walne zgromadzenie; rada nadzorcza w przypadkach wymaganych.",
+          "Kapitał": "Wymagany kapitał zakładowy.",
+          "Dobre skojarzenie": "Struktura dla większych przedsięwzięć z udziałem inwestorów akcyjnych."
+        },
+        remember: ["Nie myl akcjonariusza SKA z akcjonariuszem SA w zakresie całej konstrukcji spółki.", "Komplementariusz pozostaje centrum odpowiedzialności."],
+        flash: ["Jacy wspólnicy występują w SKA?", "Komplementariusze i akcjonariusze."]
+      },
+      {
+        id: "zoo",
+        title: "Spółka z o.o.",
+        type: "Spółka kapitałowa",
+        tags: ["udziały", "zarząd", "kapitał zakładowy"],
+        summary: "Najpopularniejsza spółka kapitałowa. Wspólnicy obejmują udziały, a odpowiedzialność za zobowiązania koncentruje się na majątku spółki.",
+        facts: {
+          "Odpowiedzialność": "Wspólnicy co do zasady nie odpowiadają za zobowiązania spółki.",
+          "Organy": "Zgromadzenie wspólników, zarząd, czasem rada nadzorcza lub komisja rewizyjna.",
+          "Kapitał": "Wymagany minimalny kapitał zakładowy.",
+          "Dobre skojarzenie": "Elastyczna forma dla biznesu z ograniczeniem ryzyka właścicieli."
+        },
+        remember: ["Zarząd może ponosić odpowiedzialność w szczególnych sytuacjach.", "Udział nie jest akcją; inne są też mechanizmy korporacyjne."],
+        flash: ["Czy wspólnik sp. z o.o. odpowiada za długi spółki?", "Co do zasady nie, ryzykuje głównie wniesionym wkładem."]
+      },
+      {
+        id: "psa",
+        title: "Prosta spółka akcyjna",
+        type: "Spółka kapitałowa",
+        tags: ["akcje beznominałowe", "startup", "rada dyrektorów"],
+        summary: "Elastyczna spółka kapitałowa zaprojektowana m.in. dla przedsięwzięć innowacyjnych. Wyróżnia ją prostsza struktura kapitału akcyjnego.",
+        facts: {
+          "Odpowiedzialność": "Akcjonariusze co do zasady nie odpowiadają za zobowiązania spółki.",
+          "Organy": "Zarząd albo rada dyrektorów; możliwe rozwiązania bardziej elastyczne niż w SA.",
+          "Kapitał": "Kapitał akcyjny o niskim progu wejścia.",
+          "Dobre skojarzenie": "Startup, inwestorzy, szybkie wejścia i wyjścia kapitałowe."
+        },
+        remember: ["Akcje PSA nie mają wartości nominalnej.", "PSA wymaga uważnego czytania umowy spółki i rejestru akcjonariuszy."],
+        flash: ["Co jest charakterystyczne dla akcji w PSA?", "Są beznominałowe i powiązane z kapitałem akcyjnym, a nie klasycznym zakładowym."]
+      },
+      {
+        id: "sa",
+        title: "Spółka akcyjna",
+        type: "Spółka kapitałowa",
+        tags: ["akcje", "walne zgromadzenie", "rada nadzorcza"],
+        summary: "Najbardziej sformalizowana spółka kapitałowa. Nadaje się do dużych przedsięwzięć, emisji akcji i rozproszonego akcjonariatu.",
+        facts: {
+          "Odpowiedzialność": "Akcjonariusze co do zasady nie odpowiadają za zobowiązania spółki.",
+          "Organy": "Walne zgromadzenie, zarząd i rada nadzorcza.",
+          "Kapitał": "Wymagany wyższy minimalny kapitał zakładowy.",
+          "Dobre skojarzenie": "Duży biznes, finansowanie kapitałowe, potencjalny rynek publiczny."
+        },
+        remember: ["SA ma obowiązkową radę nadzorczą.", "Wysoki formalizm oznacza większą wagę uchwał, raportowania i procedur."],
+        flash: ["Jaki organ nadzoru jest obowiązkowy w SA?", "Rada nadzorcza."]
+      },
+      {
+        id: "merger",
+        title: "Łączenie spółek",
+        type: "Transakcja",
+        tags: ["fuzja", "plan połączenia", "sukcesja"],
+        summary: "Połączenie polega na przeniesieniu majątku jednej lub kilku spółek na inną albo na utworzeniu nowej spółki. Kluczowe są plan, uchwały i wpis do rejestru.",
+        facts: {
+          "Tryby": "Przez przejęcie albo przez zawiązanie nowej spółki.",
+          "Dokumenty": "Plan połączenia, załączniki, sprawozdania i opinie, jeśli są wymagane.",
+          "Skutek": "Sukcesja praw i obowiązków z dniem połączenia.",
+          "Ryzyko": "Poprawność wyceny, prawa wspólników i wierzycieli, terminy rejestrowe."
+        },
+        remember: ["Dzień połączenia to wpis do rejestru właściwy dla spółki przejmującej albo nowo zawiązanej.", "Weryfikuj, czy można zastosować procedurę uproszczoną."],
+        flash: ["Jakie są dwa podstawowe tryby łączenia?", "Połączenie przez przejęcie oraz przez zawiązanie nowej spółki."]
+      },
+      {
+        id: "division",
+        title: "Podział spółek",
+        type: "Transakcja",
+        tags: ["wydzielenie", "rozdzielenie majątku", "plan podziału"],
+        summary: "Podział służy rozdzieleniu majątku spółki między inne lub nowe podmioty. W praktyce ważne są składniki majątku, zobowiązania i ochrona interesariuszy.",
+        facts: {
+          "Tryby": "Przez przejęcie, zawiązanie nowych spółek, przejęcie i zawiązanie albo przez wydzielenie.",
+          "Dokumenty": "Plan podziału z opisem składników majątku i zasad przyznania praw.",
+          "Skutek": "Przeniesienie części majątku zgodnie z planem i wpisem rejestrowym.",
+          "Ryzyko": "Alokacja zobowiązań, relacje z wierzycielami i ciągłość umów."
+        },
+        remember: ["Nie każda spółka może być dzielona w każdym trybie.", "Plan podziału jest osią całej analizy."],
+        flash: ["Co jest centralnym dokumentem przy podziale?", "Plan podziału."]
+      },
+      {
+        id: "transform",
+        title: "Przekształcenie spółek",
+        type: "Transakcja",
+        tags: ["zmiana formy", "kontynuacja", "plan przekształcenia"],
+        summary: "Przekształcenie zmienia formę prawną bez likwidacji działalności. Istotą jest kontynuacja praw i obowiązków w nowym typie spółki.",
+        facts: {
+          "Cel": "Dostosowanie formy do skali, ryzyka, inwestorów lub wymogów organizacyjnych.",
+          "Dokumenty": "Plan przekształcenia, załączniki, uchwała i rejestracja.",
+          "Skutek": "Spółka przekształcona kontynuuje działalność spółki przekształcanej.",
+          "Ryzyko": "Wycena, prawa wspólników, odpowiedzialność i zachowanie zezwoleń."
+        },
+        remember: ["To nie jest sprzedaż przedsiębiorstwa.", "Sprawdź odpowiedzialność wspólników po przekształceniu."],
+        flash: ["Czy przekształcenie oznacza likwidację starej spółki?", "Nie, zasadą jest kontynuacja w innej formie prawnej."]
+      },
+      {
+        id: "aport",
+        title: "Aport i podwyższenie kapitału",
+        type: "Transakcja",
+        tags: ["wkład niepieniężny", "udziały", "akcje"],
+        summary: "Aport to wkład niepieniężny wnoszony do spółki w zamian za udziały lub akcje. Najważniejsze są zdolność aportowa, wycena i odpowiedzialność za zawyżenie wartości.",
+        facts: {
+          "Przedmiot": "Rzeczy, prawa, przedsiębiorstwo lub zorganizowana część przedsiębiorstwa, jeśli spełniają wymogi.",
+          "Dokumenty": "Umowa, uchwała, opis wkładu, czasem opinia lub badanie.",
+          "Skutek": "Objęcie udziałów albo akcji przez wnoszącego wkład.",
+          "Ryzyko": "Zawyżenie wartości, wady prawne przedmiotu aportu, podatki."
+        },
+        remember: ["Świadczenie pracy lub usług nie zawsze może być aportem w danym typie spółki.", "Opis aportu powinien pozwalać zidentyfikować składnik i jego wartość."],
+        flash: ["Czym jest aport?", "Wkładem niepieniężnym wnoszonym do spółki za prawa udziałowe."]
+      },
+      {
+        id: "redemption",
+        title: "Umorzenie udziałów lub akcji",
+        type: "Transakcja",
+        tags: ["dobrowolne", "przymusowe", "wynagrodzenie"],
+        summary: "Umorzenie prowadzi do unicestwienia udziałów albo akcji. Może służyć wyjściu wspólnika, zmianie struktury właścicielskiej lub rozliczeniom korporacyjnym.",
+        facts: {
+          "Tryby": "Dobrowolne, przymusowe albo automatyczne, jeśli przepisy i dokumenty spółki na to pozwalają.",
+          "Dokumenty": "Podstawa w umowie lub statucie, uchwała i dokumenty rozliczeniowe.",
+          "Skutek": "Zmniejszenie liczby praw udziałowych, czasem obniżenie kapitału.",
+          "Ryzyko": "Prawidłowe wynagrodzenie, podstawa umowna, ochrona kapitału i wierzycieli."
+        },
+        remember: ["Zawsze sprawdź, czy umowa lub statut przewiduje dany tryb umorzenia.", "Umorzenie bez wynagrodzenia wymaga szczególnej podstawy i zgody w odpowiednich przypadkach."],
+        flash: ["Co jest skutkiem umorzenia udziału?", "Unicestwienie udziału i zmiana struktury praw wspólników."]
+      }
+    ];
+
+    const questions = [
+      { q: "Jaki jest podstawowy podział spółek handlowych w KSH?", a: "Osobowe i kapitałowe", o: ["Osobowe i kapitałowe", "Publiczne i prywatne", "Rejestrowe i nierejestrowe"] },
+      { q: "Co jest typowe dla spółek kapitałowych?", a: "Działanie przez organy", o: ["Brak organów", "Działanie przez organy", "Zawsze pełna odpowiedzialność wspólników"] },
+      { q: "Która grupa obejmuje spółkę jawną i komandytową?", a: "Spółki osobowe", o: ["Spółki osobowe", "Spółki kapitałowe", "Fundusze inwestycyjne"] },
+      { q: "Która spółka jest przeznaczona dla wolnych zawodów?", a: "Spółka partnerska", o: ["Spółka jawna", "Spółka partnerska", "Spółka akcyjna"] },
+      { q: "W której spółce występują komplementariusz i komandytariusz?", a: "Spółka komandytowa", o: ["Spółka z o.o.", "Spółka komandytowa", "Prosta spółka akcyjna"] },
+      { q: "Jaki dokument jest osią podziału spółki?", a: "Plan podziału", o: ["Plan podziału", "Lista obecności", "Regulamin zarządu"] },
+      { q: "Która spółka ma obowiązkową radę nadzorczą?", a: "Spółka akcyjna", o: ["Spółka jawna", "Spółka akcyjna", "Spółka partnerska"] },
+      { q: "Co wyróżnia przekształcenie?", a: "Kontynuacja działalności w innej formie", o: ["Likwidacja działalności", "Kontynuacja działalności w innej formie", "Zawsze sprzedaż przedsiębiorstwa"] },
+      { q: "Jakie akcje ma PSA?", a: "Beznominałowe", o: ["Beznominałowe", "Wyłącznie imienne z nominałem", "Wyłącznie na okaziciela"] }
+    ];
+
+    let activeId = cards[0].id;
+    let mode = "learn";
+    let seen = new Set();
+    let flashBack = false;
+    let quizIndex = 0;
+
+    const tabs = document.querySelector("#tabs");
+    const content = document.querySelector("#content");
+    const progressText = document.querySelector("#progressText");
+    const progressBar = document.querySelector("#progressBar");
+    const flash = document.querySelector("#flash");
+    const flashQ = document.querySelector("#flashQ");
+    const flashA = document.querySelector("#flashA");
+
+    function activeCard() {
+      return cards.find(card => card.id === activeId);
+    }
+
+    function escapeAttr(value) {
+      return String(value).replace(/"/g, "&quot;");
+    }
+
+    function lawTip(label) {
+      const ref = lawRefs[String(label).toLowerCase()];
+      if (!ref) return label;
+      return `<span class="law-tip" tabindex="0" data-law="${escapeAttr(ref)}">${label}</span>`;
+    }
+
+    function renderArticles(card) {
+      const articles = keyArticles[card.id] || [];
+      if (!articles.length) return "";
+      return `
+        <h3>Podstawa KSH</h3>
+        <ul class="list">${articles.map(item => `<li>${item}</li>`).join("")}</ul>
+        <a class="source-link" href="${kshSourceUrl}" target="_blank" rel="noopener">Otwórz KSH w GOFIN</a>
+      `;
+    }
+
+    function renderAnalysis(card) {
+      if (card.type === "Transakcja") {
+        return `
+          <h3>Jak analizować w zadaniu</h3>
+          <ul class="list">
+            <li>Ustal strony transakcji, typy spółek i czy przepisy dopuszczają dany tryb.</li>
+            <li>Znajdź dokument bazowy: plan połączenia, plan podziału, plan przekształcenia albo uchwałę.</li>
+            <li>Sprawdź skutki wpisu do KRS: sukcesję, kontynuację, przejście majątku i zmianę odpowiedzialności.</li>
+            <li>Oceń ryzyka dla wspólników, akcjonariuszy, wierzycieli, organów i biegłego rewidenta.</li>
+          </ul>
+        `;
+      }
+      if (card.type === "Wprowadzenie") {
+        return `
+          <h3>Jak używać tej karty</h3>
+          <ul class="list">
+            <li>Najpierw zapamiętaj kategorie, potem dopiero wyjątki.</li>
+            <li>Każde podkreślone pojęcie najedź myszą albo ustaw na nim fokus, aby zobaczyć artykuł KSH.</li>
+            <li>Po tej karcie przejdź do porównywarki i zestaw dwie podobne formy.</li>
+          </ul>
+        `;
+      }
+      return `
+        <h3>Jak rozpoznać w kazusie</h3>
+        <ul class="list">
+          <li>Sprawdź nazwę firmy i role osób: wspólnik, partner, komplementariusz, komandytariusz, akcjonariusz albo członek zarządu.</li>
+          <li>Ustal, kto reprezentuje spółkę i czy działa samodzielnie, łącznie albo przez organ.</li>
+          <li>Oddziel odpowiedzialność spółki od odpowiedzialności wspólników oraz członków organów.</li>
+          <li>Porównaj wymagany kapitał, organy i formalizm uchwał z innymi typami spółek.</li>
+        </ul>
+      `;
+    }
+
+    function renderTabs() {
+      tabs.innerHTML = cards.map(card => `
+        <button class="tab ${card.id === activeId ? "active" : ""}" data-id="${card.id}">
+          ${card.title}
+        </button>
+      `).join("");
+    }
+
+    function renderLearn() {
+      const card = activeCard();
+      seen.add(card.id);
+      content.innerHTML = `
+        <h2>${card.title}</h2>
+        <div class="meta">
+          <span class="pill">${lawTip(card.type)}</span>
+          ${card.tags.map(tag => `<span class="pill">${lawTip(tag)}</span>`).join("")}
+        </div>
+        <p class="summary">${card.summary}</p>
+        <div class="facts">
+          ${Object.entries(card.facts).map(([label, value]) => `
+            <div class="fact"><strong>${lawTip(label)}</strong>${value}</div>
+          `).join("")}
+        </div>
+        <h3>Zapamiętaj</h3>
+        <ul class="list">${card.remember.map(item => `<li>${item}</li>`).join("")}</ul>
+        ${renderAnalysis(card)}
+        ${renderArticles(card)}
+        <div class="callout"><strong>Tryb nauki:</strong> porównuj odpowiedzialność, organy i kapitał. To najczęściej pozwala szybko odróżnić podobne konstrukcje.</div>
+      `;
+      renderProgress();
+      renderFlash();
+    }
+
+    function renderQuiz() {
+      const item = questions[quizIndex % questions.length];
+      content.innerHTML = `
+        <h2>Quiz KSH</h2>
+        <p class="summary">${item.q}</p>
+        <div class="answers">
+          ${item.o.map(option => `<button class="answer" data-answer="${option}">${option}</button>`).join("")}
+        </div>
+        <div class="callout" id="quizNote">Wybierz odpowiedź, a aplikacja pokaże wynik.</div>
+      `;
+    }
+
+    function renderCompare() {
+      const first = activeCard();
+      const second = cards.find(card => card.id !== first.id) || cards[0];
+      content.innerHTML = `
+        <h2>Porównywarka</h2>
+        <p class="summary">Zestaw dwie formy lub transakcje i sprawdź różnice w odpowiedzialności, dokumentach oraz praktycznym zastosowaniu.</p>
+        <div class="compare">
+          <select id="leftSelect">${cards.map(card => `<option value="${card.id}" ${card.id === first.id ? "selected" : ""}>${card.title}</option>`).join("")}</select>
+          <select id="rightSelect">${cards.map(card => `<option value="${card.id}" ${card.id === second.id ? "selected" : ""}>${card.title}</option>`).join("")}</select>
+        </div>
+        <div id="compareResult"></div>
+      `;
+      updateCompare();
+    }
+
+    function updateCompare() {
+      const left = cards.find(card => card.id === document.querySelector("#leftSelect").value);
+      const right = cards.find(card => card.id === document.querySelector("#rightSelect").value);
+      const rows = ["Odpowiedzialność", "Organy", "Kapitał", "Dokumenty", "Skutek", "Ryzyko", "Dobre skojarzenie"];
+      document.querySelector("#compareResult").innerHTML = `
+        <table class="compare-table">
+          <thead><tr><th>Cecha</th><th>${left.title}</th><th>${right.title}</th></tr></thead>
+          <tbody>
+            ${rows.map(row => `<tr><th>${row}</th><td>${left.facts[row] || "-"}</td><td>${right.facts[row] || "-"}</td></tr>`).join("")}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function renderFlash() {
+      const card = activeCard();
+      flashBack = false;
+      flashQ.textContent = card.flash[0];
+      flashA.textContent = "";
+    }
+
+    function flipFlash() {
+      const card = activeCard();
+      flashBack = !flashBack;
+      flashQ.textContent = flashBack ? card.flash[1] : card.flash[0];
+      flashA.textContent = flashBack ? "Kliknij ponownie, aby wrócić do pytania." : "";
+    }
+
+    function renderProgress() {
+      progressText.textContent = `${seen.size} z ${cards.length} kart przejrzanych`;
+      progressBar.style.width = `${(seen.size / cards.length) * 100}%`;
+    }
+
+    function render() {
+      renderTabs();
+      document.querySelectorAll(".mode-btn").forEach(btn => btn.classList.toggle("active", btn.dataset.mode === mode));
+      if (mode === "learn") renderLearn();
+      if (mode === "quiz") renderQuiz();
+      if (mode === "compare") renderCompare();
+    }
+
+    tabs.addEventListener("click", event => {
+      const button = event.target.closest(".tab");
+      if (!button) return;
+      activeId = button.dataset.id;
+      mode = "learn";
+      render();
+    });
+
+    document.querySelectorAll(".mode-btn").forEach(button => {
+      button.addEventListener("click", () => {
+        mode = button.dataset.mode;
+        render();
+      });
+    });
+
+    document.querySelector("#shuffle").addEventListener("click", () => {
+      const next = cards[Math.floor(Math.random() * cards.length)];
+      activeId = next.id;
+      mode = "learn";
+      render();
+    });
+
+    content.addEventListener("click", event => {
+      const answer = event.target.closest(".answer");
+      if (answer) {
+        const item = questions[quizIndex % questions.length];
+        const ok = answer.dataset.answer === item.a;
+        document.querySelectorAll(".answer").forEach(btn => {
+          btn.disabled = true;
+          if (btn.dataset.answer === item.a) btn.classList.add("good");
+        });
+        if (!ok) answer.classList.add("bad");
+        document.querySelector("#quizNote").innerHTML = ok ? "<strong>Dobrze.</strong> Następne pytanie za chwilę." : `<strong>Nie.</strong> Poprawna odpowiedź: ${item.a}.`;
+        setTimeout(() => {
+          quizIndex++;
+          renderQuiz();
+        }, 1100);
+      }
+    });
+
+    content.addEventListener("change", event => {
+      if (event.target.matches("#leftSelect, #rightSelect")) updateCompare();
+    });
+
+    flash.addEventListener("click", flipFlash);
+    flash.addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        flipFlash();
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
