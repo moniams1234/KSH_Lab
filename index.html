@@ -85,6 +85,40 @@
       padding: 24px clamp(14px, 3vw, 28px) 48px;
     }
 
+    .page-switch {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+      overflow-x: auto;
+    }
+
+    .page-btn {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--ink);
+      min-height: 46px;
+      padding: 0 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 750;
+      white-space: nowrap;
+    }
+
+    .page-btn.active {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: #fff;
+    }
+
+    body.guide-page .toolbar,
+    body.guide-page aside {
+      display: none;
+    }
+
+    body.guide-page .grid {
+      grid-template-columns: 1fr;
+    }
+
     .toolbar {
       position: sticky;
       top: 0;
@@ -260,6 +294,17 @@
       text-transform: uppercase;
     }
 
+    .basis {
+      display: block;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid #dfe7ed;
+      color: #38515b;
+      font-size: .84rem;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
     .list {
       margin: 0;
       padding-left: 20px;
@@ -357,7 +402,7 @@
 
     .modes {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       gap: 8px;
       margin-bottom: 14px;
     }
@@ -376,23 +421,134 @@
       margin-top: 16px;
     }
 
-    .source-link {
-      display: inline-flex;
-      align-items: center;
-      min-height: 36px;
-      margin-top: 12px;
-      padding: 0 12px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      color: var(--accent);
-      background: #f8fbfb;
-      font-weight: 700;
-      text-decoration: none;
+    .legal-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin: 18px 0;
     }
 
-    .source-link:hover {
+    .legal-box {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 13px;
+      background: #fbfcfd;
+      min-height: 138px;
+    }
+
+    .legal-box b {
+      display: block;
+      margin-bottom: 8px;
+      color: #26313c;
+    }
+
+    .case-box {
+      display: grid;
+      gap: 14px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcfd;
+    }
+
+    .case-question {
+      border-left: 4px solid var(--accent);
+      padding-left: 12px;
+      line-height: 1.55;
+    }
+
+    .guide-tools {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(190px, .42fr);
+      gap: 10px;
+      margin: 16px 0;
+    }
+
+    .guide-tools input,
+    .guide-tools select {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0 12px;
+      background: white;
+    }
+
+    .guide-layout {
+      display: grid;
+      grid-template-columns: minmax(220px, .42fr) minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
+    }
+
+    .guide-list {
+      display: grid;
+      gap: 8px;
+      max-height: 560px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .guide-topic {
+      width: 100%;
+      text-align: left;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 8px;
+      padding: 11px;
+      cursor: pointer;
+    }
+
+    .guide-topic.active {
       border-color: var(--accent);
       background: #eef7f6;
+    }
+
+    .guide-topic small {
+      display: block;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .article-chip {
+      display: inline-flex;
+      position: relative;
+      margin: 3px 5px 3px 0;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #eef5f4;
+      color: #174d4a;
+      font-weight: 700;
+      cursor: help;
+    }
+
+    .article-chip::after {
+      content: attr(data-text);
+      position: absolute;
+      left: 0;
+      bottom: calc(100% + 8px);
+      z-index: 25;
+      width: min(430px, 82vw);
+      max-height: 260px;
+      overflow: auto;
+      padding: 12px;
+      border-radius: 8px;
+      background: #17222b;
+      color: #fff;
+      font-size: .82rem;
+      line-height: 1.42;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(4px);
+      transition: .12s ease;
+      white-space: normal;
+    }
+
+    .article-chip:hover::after,
+    .article-chip:focus::after {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     footer {
@@ -402,7 +558,11 @@
     }
 
     @media (max-width: 860px) {
-      .toolbar, .grid, .facts, .compare {
+      .toolbar, .grid, .facts, .compare, .guide-tools, .guide-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .legal-grid, .modes {
         grid-template-columns: 1fr;
       }
 
@@ -416,11 +576,16 @@
   <header>
     <div class="hero">
       <h1>KSH Lab</h1>
-      <p class="lead">Interaktywna nauka typów spółek handlowych, odpowiedzialności wspólników, organów oraz transakcji restrukturyzacyjnych: łączenia, podziału i przekształcenia.</p>
+      <p class="lead">Aplikacja do nauki KSH w trybie prawniczym: przepis, przesłanki, skutek prawny, wyjątki, kazusy oraz porównanie konstrukcji spółek i reorganizacji.</p>
     </div>
   </header>
 
-  <main>
+      <main>
+    <div class="page-switch" aria-label="Wybór strony">
+      <button class="page-btn active" data-page="review">Powtórka</button>
+      <button class="page-btn" data-page="guide">Przewodnik KSH</button>
+    </div>
+
     <div class="toolbar">
       <nav class="tabs" id="tabs" aria-label="Karty nauki"></nav>
       <button class="icon-btn" id="shuffle" title="Losuj kartę" aria-label="Losuj kartę">↻</button>
@@ -432,6 +597,7 @@
           <button class="mode-btn active" data-mode="learn">Nauka</button>
           <button class="mode-btn" data-mode="quiz">Quiz</button>
           <button class="mode-btn" data-mode="compare">Porównaj</button>
+          <button class="mode-btn" data-mode="case">Kazus</button>
         </div>
         <div id="content"></div>
       </section>
@@ -453,11 +619,12 @@
         </div>
 
         <div class="card">
-          <h3>Mapa tematów</h3>
+          <h3>Tryb prawnika</h3>
           <ul class="list">
-            <li>Spółki osobowe: jawna, partnerska, komandytowa, komandytowo-akcyjna.</li>
-            <li>Spółki kapitałowe: z o.o., prosta akcyjna, akcyjna.</li>
-            <li>Operacje: łączenie, podział, przekształcenie, aport, umorzenie udziałów.</li>
+            <li>Znajdź podstawę prawną i kwalifikację czynności.</li>
+            <li>Rozbij normę na przesłanki, wyjątek i skutek.</li>
+            <li>Ustal role osób: wspólnik, organ, wierzyciel, spółka.</li>
+            <li>Na końcu formułuj krótką konkluzję jak w opinii prawnej.</li>
           </ul>
         </div>
       </aside>
@@ -469,8 +636,6 @@
   </main>
 
   <script>
-    const kshSourceUrl = "https://przepisy.gofin.pl/przepisy,2,9,9,208,,,ustawa-z-dnia-15092000-r-kodeks-spolek-handlowych.html";
-
     const lawRefs = {
       "spółka osobowa": "KSH art. 4 § 1 pkt 1 oraz art. 8 § 1 - katalog spółek osobowych i ich zdolność prawna.",
       "spółka kapitałowa": "KSH art. 4 § 1 pkt 2 - spółka z o.o., prosta spółka akcyjna i spółka akcyjna.",
@@ -544,6 +709,541 @@
       aport: ["art. 14 KSH - wkłady i ograniczenia", "art. 158 KSH - aport w sp. z o.o.", "art. 309 KSH - wkłady w SA"],
       redemption: ["art. 199 KSH - umorzenie udziałów w sp. z o.o.", "art. 359 KSH - umorzenie akcji w SA"]
     };
+
+    const factBasis = {
+      intro: {
+        "Podział": "art. 4 § 1 pkt 1-2 KSH",
+        "Pytanie kontrolne": "art. 8 § 1, art. 31 § 1, art. 151 § 4, art. 299 § 1 KSH",
+        "Druga oś": "art. 154 § 1, art. 201 § 1, art. 300^3 § 1, art. 308 § 1 KSH",
+        "Praktyka": "art. 4 § 1, art. 8 § 1, art. 29 § 1, art. 201 § 1, art. 368 § 1 KSH"
+      },
+      personal: {
+        "Katalog": "art. 4 § 1 pkt 1 KSH",
+        "Majątek": "art. 8 § 1 KSH",
+        "Odpowiedzialność": "art. 31 § 1, art. 95 § 1, art. 111 KSH",
+        "Organy": "art. 29 § 1, art. 96 § 1, art. 117 KSH"
+      },
+      capital: {
+        "Katalog": "art. 4 § 1 pkt 2 KSH",
+        "Właściciele": "art. 152, art. 300^2 § 1, art. 302 KSH",
+        "Odpowiedzialność": "art. 151 § 4, art. 300^1 § 4, art. 301 § 5, art. 299 § 1 KSH",
+        "Formalizm": "art. 201 § 1, art. 227 § 1, art. 368 § 1, art. 382 § 1, art. 393 KSH"
+      },
+      organs: {
+        "Zarząd": "art. 201 § 1, art. 368 § 1 KSH; dla PSA art. 300^52 § 1 KSH",
+        "Rada nadzorcza": "art. 213 § 1-2, art. 382 § 1 KSH",
+        "Zgromadzenie": "art. 227 § 1, art. 393 KSH",
+        "Reprezentacja": "art. 29 § 1, art. 117, art. 201 § 1, art. 368 § 1 KSH"
+      },
+      spj: {
+        "Odpowiedzialność": "art. 22 § 2 i art. 31 § 1 KSH",
+        "Organy": "art. 29 § 1 i art. 39 § 1 KSH",
+        "Kapitał": "art. 22 § 1 KSH; brak przepisu o kapitale zakładowym dla sp.j.",
+        "Dobre skojarzenie": "art. 22 § 1 KSH"
+      },
+      spp: {
+        "Odpowiedzialność": "art. 95 § 1 KSH",
+        "Organy": "art. 96 § 1 i art. 97 § 1 KSH",
+        "Kapitał": "art. 86 § 1 KSH; brak kapitału zakładowego",
+        "Dobre skojarzenie": "art. 86 § 1 i art. 88 KSH"
+      },
+      spk: {
+        "Odpowiedzialność": "art. 102 i art. 111 KSH",
+        "Organy": "art. 117 KSH",
+        "Kapitał": "art. 102 KSH; brak kapitału zakładowego",
+        "Dobre skojarzenie": "art. 102 i art. 111 KSH"
+      },
+      ska: {
+        "Odpowiedzialność": "art. 125 i art. 126 § 1 pkt 1 KSH",
+        "Organy": "art. 140 § 1 i art. 142 § 1 KSH",
+        "Kapitał": "art. 126 § 1 pkt 2 KSH w zw. z przepisami o SA",
+        "Dobre skojarzenie": "art. 125 KSH"
+      },
+      zoo: {
+        "Odpowiedzialność": "art. 151 § 4 i art. 299 § 1 KSH",
+        "Organy": "art. 201 § 1, art. 213 § 1-2, art. 227 § 1 KSH",
+        "Kapitał": "art. 154 § 1-2 KSH",
+        "Dobre skojarzenie": "art. 151 § 1 i § 4 KSH"
+      },
+      psa: {
+        "Odpowiedzialność": "art. 300^1 § 4 KSH",
+        "Organy": "art. 300^52 § 1 i art. 300^73 § 1 KSH",
+        "Kapitał": "art. 300^2 § 1 i art. 300^3 § 1 KSH",
+        "Dobre skojarzenie": "art. 300^1 § 1 KSH"
+      },
+      sa: {
+        "Odpowiedzialność": "art. 301 § 5 KSH",
+        "Organy": "art. 368 § 1, art. 382 § 1, art. 393 KSH",
+        "Kapitał": "art. 308 § 1 KSH",
+        "Dobre skojarzenie": "art. 301 § 1, art. 304 § 1 KSH"
+      },
+      merger: {
+        "Tryby": "art. 492 § 1 KSH",
+        "Dokumenty": "art. 498 § 1 i art. 499 § 1 KSH",
+        "Skutek": "art. 493 § 2 i art. 494 § 1 KSH",
+        "Ryzyko": "art. 495 § 1, art. 499 § 1, art. 502 § 1 KSH"
+      },
+      division: {
+        "Tryby": "art. 529 § 1 KSH",
+        "Dokumenty": "art. 533 § 1 i art. 534 § 1 KSH",
+        "Skutek": "art. 530 § 1-2 i art. 531 § 1 KSH",
+        "Ryzyko": "art. 531 § 1, art. 546 § 1 KSH"
+      },
+      transform: {
+        "Cel": "art. 551 § 1 KSH",
+        "Dokumenty": "art. 557 § 1 i art. 558 § 1 KSH",
+        "Skutek": "art. 552 i art. 553 § 1 KSH",
+        "Ryzyko": "art. 553 § 3, art. 574 KSH"
+      },
+      aport: {
+        "Przedmiot": "art. 14 § 1, art. 158 § 1, art. 309 § 3 KSH",
+        "Dokumenty": "art. 158 § 1, art. 311 § 1 KSH",
+        "Skutek": "art. 152, art. 300^2 § 1, art. 302 KSH",
+        "Ryzyko": "art. 14 § 2, art. 175 § 1, art. 481 § 1 KSH"
+      },
+      redemption: {
+        "Tryby": "art. 199 § 1 i art. 359 § 1 KSH",
+        "Dokumenty": "art. 199 § 2 i art. 359 § 2 KSH",
+        "Skutek": "art. 199 § 6-7 i art. 360 § 1 KSH",
+        "Ryzyko": "art. 199 § 2-3 i art. 359 § 2 KSH"
+      }
+    };
+
+    const legalProfiles = {
+      intro: {
+        thesis: "Kwalifikacja typu spółki determinuje odpowiedzialność, reprezentację, organy i tryb czynności.",
+        elements: ["ustal typ spółki", "ustal rolę osoby", "znajdź przepis szczególny", "dopiero potem stosuj regułę ogólną"],
+        traps: ["mieszanie spółek osobowych z kapitałowymi", "wnioskowanie z nazwy bez sprawdzenia KRS", "pomijanie przepisów szczególnych"]
+      },
+      personal: {
+        thesis: "Spółka osobowa działa we własnym imieniu, ale odpowiedzialność wspólników może wracać w analizie wierzycielskiej.",
+        elements: ["zdolność prawna", "majątek spółki", "rola wspólnika", "zakres odpowiedzialności"],
+        traps: ["twierdzenie, że spółka osobowa nie ma majątku", "pomijanie odpowiedzialności subsydiarnej", "mylenie komandytariusza z komplementariuszem"]
+      },
+      capital: {
+        thesis: "Spółka kapitałowa jest osobą prawną, a właściciel co do zasady nie odpowiada za jej zobowiązania.",
+        elements: ["osobowość prawna", "udziały albo akcje", "organy", "kapitał i uchwały"],
+        traps: ["automatyczne przenoszenie długu na wspólnika", "pomijanie odpowiedzialności zarządu", "mylenie PSA z SA"]
+      },
+      organs: {
+        thesis: "Organ działa za spółkę tylko w granicach kompetencji wynikających z KSH i umowy albo statutu.",
+        elements: ["kompetencja organu", "sposób reprezentacji", "wymagana uchwała", "skutek naruszenia"],
+        traps: ["utożsamianie organu ze wspólnikiem", "brak sprawdzenia reprezentacji", "pomijanie zgód korporacyjnych"]
+      },
+      spj: {
+        thesis: "Wierzyciel spółki jawnej pozywa spółkę, ale po spełnieniu przesłanek może sięgnąć do wspólników.",
+        elements: ["zobowiązanie spółki", "bezskuteczność egzekucji", "solidarność", "subsydiarność"],
+        traps: ["zbyt wczesne kierowanie egzekucji do wspólnika", "pomijanie reprezentacji z art. 29 KSH", "brak rozróżnienia procesu i egzekucji"]
+      },
+      spp: {
+        thesis: "Partner chroni się przed odpowiedzialnością za błąd zawodowy innego partnera, ale nie przed każdym długiem spółki.",
+        elements: ["wolny zawód", "źródło zobowiązania", "czy błąd pochodzi od innego partnera", "czy działał zarząd"],
+        traps: ["traktowanie ochrony partnera jako pełnego immunitetu", "pomijanie katalogu wolnych zawodów", "mylenie partnera ze wspólnikiem sp. z o.o."]
+      },
+      spk: {
+        thesis: "Analiza spółki komandytowej zaczyna się od pytania, kto jest komplementariuszem, a kto komandytariuszem.",
+        elements: ["rola wspólnika", "suma komandytowa", "wkład", "firma spółki", "reprezentacja"],
+        traps: ["mylenie sumy komandytowej z wkładem", "pomijanie skutków nazwiska komandytariusza w firmie", "zakładanie, że komandytariusz reprezentuje spółkę"]
+      },
+      ska: {
+        thesis: "SKA łączy osobową odpowiedzialność komplementariusza z akcyjnym udziałem akcjonariusza.",
+        elements: ["komplementariusz", "akcjonariusz", "statut", "walne zgromadzenie", "rada nadzorcza"],
+        traps: ["traktowanie SKA jak zwykłej SA", "pomijanie odpowiedzialności komplementariusza", "brak analizy statutu"]
+      },
+      zoo: {
+        thesis: "W sp. z o.o. spółka odpowiada sama, ale zarząd może ponosić odpowiedzialność na podstawie art. 299 KSH.",
+        elements: ["zobowiązanie spółki", "bezskuteczność egzekucji", "członek zarządu", "przesłanki egzoneracyjne"],
+        traps: ["pozywanie wspólnika zamiast badania art. 299", "pomijanie terminu wniosku o upadłość", "mylenie udziału z akcją"]
+      },
+      psa: {
+        thesis: "PSA wymaga osobnej analizy, bo nie jest uproszczoną SA, tylko odrębną konstrukcją kapitałową.",
+        elements: ["akcje bez nominału", "kapitał akcyjny", "rejestr akcjonariuszy", "zarząd albo rada dyrektorów"],
+        traps: ["stosowanie mechanicznie reguł SA", "pomijanie rady dyrektorów", "mylenie kapitału akcyjnego z zakładowym"]
+      },
+      sa: {
+        thesis: "SA jest konstrukcją wysokiego formalizmu: statut, organy i uchwały mają zasadnicze znaczenie.",
+        elements: ["statut", "akcje", "zarząd", "rada nadzorcza", "walne zgromadzenie"],
+        traps: ["pomijanie obowiązkowej rady nadzorczej", "brak sprawdzenia kompetencji walnego zgromadzenia", "mylenie akcji z udziałami"]
+      },
+      merger: {
+        thesis: "Połączenie należy oceniać przez tryb, plan, uchwały, wpis i sukcesję uniwersalną.",
+        elements: ["dopuszczalność połączenia", "tryb", "plan połączenia", "uchwały", "dzień połączenia"],
+        traps: ["pomijanie skutku sukcesji", "brak rozróżnienia przejęcia i zawiązania nowej spółki", "ignorowanie ochrony wierzycieli"]
+      },
+      division: {
+        thesis: "Podział wymaga precyzyjnego przypisania majątku, praw i zobowiązań do spółek uczestniczących.",
+        elements: ["tryb podziału", "plan podziału", "składniki majątku", "dzień podziału", "odpowiedzialność za zobowiązania"],
+        traps: ["nieustalenie, co przechodzi na którą spółkę", "pomijanie wierzycieli", "mylenie wydzielenia z aportem"]
+      },
+      transform: {
+        thesis: "Przekształcenie nie likwiduje spółki, lecz zmienia jej formę przy zasadzie kontynuacji.",
+        elements: ["spółka przekształcana", "spółka przekształcona", "plan", "uchwała", "dzień przekształcenia"],
+        traps: ["traktowanie przekształcenia jak sprzedaży", "pomijanie odpowiedzialności po przekształceniu", "brak analizy zezwoleń i koncesji"]
+      },
+      aport: {
+        thesis: "Aport wymaga badania zdolności aportowej, wartości i skutków objęcia udziałów albo akcji.",
+        elements: ["przedmiot wkładu", "wycena", "objęcie praw udziałowych", "odpowiedzialność za zawyżenie"],
+        traps: ["uznanie pracy za aport bez sprawdzenia typu spółki", "brak opisu wkładu", "pomijanie wad prawnych składnika"]
+      },
+      redemption: {
+        thesis: "Umorzenie jest dopuszczalne tylko w trybie i na podstawie przewidzianej w KSH oraz umowie albo statucie.",
+        elements: ["podstawa umowna/statutowa", "tryb", "uchwała", "wynagrodzenie", "skutek kapitałowy"],
+        traps: ["brak podstawy w umowie lub statucie", "pomijanie wynagrodzenia", "mylenie umorzenia z nabyciem własnych udziałów"]
+      }
+    };
+
+    const legalCases = [
+      {
+        title: "Wierzyciel spółki jawnej",
+        facts: "Kontrahent ma prawomocny wyrok przeciwko spółce jawnej. Egzekucja z rachunków spółki okazała się bezskuteczna. Chce prowadzić egzekucję z majątku wspólnika.",
+        question: "Czy może skierować egzekucję do wspólnika i na jakiej podstawie?",
+        answer: "Tak, po bezskutecznej egzekucji z majątku spółki aktualizuje się subsydiarna odpowiedzialność wspólnika spółki jawnej. Punkt wyjścia: art. 31 KSH oraz zasada solidarnej odpowiedzialności wspólników.",
+        checklist: ["ustal dług spółki", "wykaż bezskuteczność egzekucji", "wskaż wspólnika", "oddziel etap procesu od egzekucji"]
+      },
+      {
+        title: "Błąd zawodowy partnera",
+        facts: "W spółce partnerskiej jeden partner popełnił błąd przy obsłudze klienta. Klient żąda zapłaty od drugiego partnera, który nie prowadził tej sprawy.",
+        question: "Jak badać odpowiedzialność drugiego partnera?",
+        answer: "Trzeba sprawdzić, czy zobowiązanie powstało w związku z wykonywaniem wolnego zawodu przez innego partnera. Jeżeli tak, art. 95 KSH ogranicza odpowiedzialność partnera, który sprawy nie prowadził.",
+        checklist: ["czy to wolny zawód", "kto wykonywał usługę", "z czego powstał dług", "czy zachodzi wyjątek"]
+      },
+      {
+        title: "Członek zarządu sp. z o.o.",
+        facts: "Spółka z o.o. nie zapłaciła faktur, a egzekucja przeciwko spółce jest bezskuteczna. Wierzyciel rozważa pozew przeciwko członkom zarządu.",
+        question: "Jak zbudować analizę odpowiedzialności z art. 299 KSH?",
+        answer: "Należy wykazać zobowiązanie spółki, bezskuteczność egzekucji i pełnienie funkcji członka zarządu. Następnie bada się przesłanki obronne, zwłaszcza terminowe zgłoszenie upadłości albo brak szkody.",
+        checklist: ["zobowiązanie spółki", "bezskuteczność egzekucji", "okres pełnienia funkcji", "przesłanki egzoneracyjne"]
+      },
+      {
+        title: "Plan połączenia",
+        facts: "Dwie spółki kapitałowe chcą przeprowadzić połączenie przez przejęcie. Zarządy przygotowały uchwały, ale nie ma planu połączenia.",
+        question: "Czy sama uchwała wystarczy?",
+        answer: "Nie. Przy połączeniu centralnym dokumentem jest plan połączenia, którego elementy określa KSH. Dopiero wokół planu buduje się dalszą procedurę, uchwały i wpis.",
+        checklist: ["ustal tryb z art. 492 KSH", "sprawdź plan z art. 498-499 KSH", "zbadaj uchwały", "określ dzień połączenia i sukcesję"]
+      },
+      {
+        title: "Przekształcenie a likwidacja",
+        facts: "Spółka komandytowa ma zostać przekształcona w spółkę z o.o. Kontrahent twierdzi, że umowy wygasną, bo powstanie nowy podmiot.",
+        question: "Czy to prawidłowe rozumowanie?",
+        answer: "Co do zasady nie. Przy przekształceniu działa zasada kontynuacji. Spółka przekształcona pozostaje podmiotem praw i obowiązków spółki przekształcanej, z zastrzeżeniem przepisów szczególnych.",
+        checklist: ["art. 551 KSH", "dzień przekształcenia", "art. 553 KSH", "wyjątki ustawowe lub umowne"]
+      }
+    ];
+
+    const articleTexts = {
+      "4": "Art. 4 KSH: przepis zawiera słowniczek ustawowy. Wskazuje m.in. spółki osobowe: jawną, partnerską, komandytową i komandytowo-akcyjną oraz spółki kapitałowe: z o.o., prostą spółkę akcyjną i akcyjną.",
+      "8": "Art. 8 § 1 KSH: spółka osobowa może we własnym imieniu nabywać prawa, w tym własność nieruchomości i inne prawa rzeczowe, zaciągać zobowiązania, pozywać i być pozywana.",
+      "14": "Art. 14 KSH: reguluje ograniczenia dotyczące wkładów do spółek, w tym wkładów niepieniężnych. Przy aporcie zawsze badaj, czy przedmiot ma zdolność aportową.",
+      "22": "Art. 22 § 1 KSH: spółką jawną jest spółka osobowa, która prowadzi przedsiębiorstwo pod własną firmą, a nie jest inną spółką handlową.",
+      "29": "Art. 29 KSH: każdy wspólnik spółki jawnej ma prawo reprezentować spółkę; prawo to dotyczy wszystkich czynności sądowych i pozasądowych spółki.",
+      "31": "Art. 31 KSH: wierzyciel spółki jawnej może prowadzić egzekucję z majątku wspólnika, gdy egzekucja z majątku spółki okaże się bezskuteczna.",
+      "86": "Art. 86 KSH: spółka partnerska jest tworzona przez wspólników, czyli partnerów, w celu wykonywania wolnego zawodu w spółce prowadzącej przedsiębiorstwo pod własną firmą.",
+      "95": "Art. 95 § 1 KSH: partner nie ponosi odpowiedzialności za zobowiązania spółki powstałe w związku z wykonywaniem wolnego zawodu przez pozostałych partnerów oraz osoby im podległe.",
+      "102": "Art. 102 KSH: spółką komandytową jest spółka osobowa mająca na celu prowadzenie przedsiębiorstwa pod własną firmą, w której za zobowiązania co najmniej jeden wspólnik odpowiada bez ograniczenia, a odpowiedzialność co najmniej jednego jest ograniczona.",
+      "111": "Art. 111 KSH: komandytariusz odpowiada za zobowiązania spółki wobec wierzycieli tylko do wysokości sumy komandytowej.",
+      "125": "Art. 125 KSH: spółką komandytowo-akcyjną jest spółka osobowa prowadząca przedsiębiorstwo pod własną firmą, w której za zobowiązania co najmniej jeden wspólnik odpowiada bez ograniczenia, a co najmniej jeden jest akcjonariuszem.",
+      "151": "Art. 151 KSH: spółka z o.o. może być utworzona przez jedną albo więcej osób w każdym celu prawnie dopuszczalnym, chyba że ustawa stanowi inaczej.",
+      "154": "Art. 154 KSH: kapitał zakładowy spółki z o.o. powinien wynosić co najmniej 5.000 zł, a wartość nominalna udziału nie może być niższa niż 50 zł.",
+      "201": "Art. 201 KSH: zarząd prowadzi sprawy spółki z o.o. i reprezentuje spółkę.",
+      "212": "Art. 212 KSH: wspólnikowi spółki z o.o. przysługuje prawo kontroli, chyba że umowa spółki lub przepisy szczególne ograniczają je w określony sposób.",
+      "227": "Art. 227 KSH: uchwały wspólników spółki z o.o. są podejmowane na zgromadzeniu wspólników, jeżeli przepisy nie przewidują innego trybu.",
+      "299": "Art. 299 KSH: jeżeli egzekucja przeciwko spółce z o.o. okaże się bezskuteczna, członkowie zarządu odpowiadają solidarnie za jej zobowiązania, z możliwością obrony wskazaną w dalszych paragrafach.",
+      "3001": "Art. 300(1) KSH: prosta spółka akcyjna może być utworzona przez jedną albo więcej osób w każdym celu prawnie dopuszczalnym, chyba że ustawa stanowi inaczej.",
+      "3002": "Art. 300(2) KSH: akcje prostej spółki akcyjnej nie mają wartości nominalnej, nie stanowią części kapitału akcyjnego i są niepodzielne.",
+      "30052": "Art. 300(52) KSH i nast.: regulują organy prostej spółki akcyjnej, w tym model zarządu albo rady dyrektorów.",
+      "301": "Art. 301 KSH: spółkę akcyjną może zawiązać jedna albo więcej osób, z wyjątkami przewidzianymi w ustawie.",
+      "304": "Art. 304 KSH: statut spółki akcyjnej powinien określać podstawowe elementy ustroju spółki, w tym firmę, siedzibę, przedmiot działalności i kapitał.",
+      "308": "Art. 308 KSH: kapitał zakładowy spółki akcyjnej powinien wynosić co najmniej 100.000 zł.",
+      "368": "Art. 368 KSH: zarząd prowadzi sprawy spółki akcyjnej i reprezentuje spółkę.",
+      "382": "Art. 382 KSH: rada nadzorcza sprawuje stały nadzór nad działalnością spółki akcyjnej we wszystkich dziedzinach jej działalności.",
+      "393": "Art. 393 KSH: przepis wskazuje sprawy wymagające uchwały walnego zgromadzenia spółki akcyjnej.",
+      "491": "Art. 491 KSH: spółki kapitałowe mogą się łączyć między sobą oraz ze spółkami osobowymi, z ograniczeniami wskazanymi w ustawie.",
+      "492": "Art. 492 KSH: połączenie może nastąpić przez przeniesienie całego majątku na inną spółkę albo przez zawiązanie nowej spółki.",
+      "494": "Art. 494 KSH: spółka przejmująca albo nowo zawiązana wstępuje z dniem połączenia w prawa i obowiązki spółki przejmowanej albo łączących się spółek.",
+      "498": "Art. 498 KSH: łączące się spółki sporządzają pisemny plan połączenia uzgodniony między spółkami.",
+      "499": "Art. 499 KSH: określa elementy planu połączenia, w tym typ, firmę i siedzibę spółek oraz zasady dotyczące praw wspólników lub akcjonariuszy.",
+      "528": "Art. 528 KSH: spółkę kapitałową można podzielić na dwie albo więcej spółek kapitałowych; nie każda spółka może być dzielona.",
+      "529": "Art. 529 KSH: wskazuje tryby podziału, m.in. przez przejęcie, przez zawiązanie nowych spółek oraz przez wydzielenie.",
+      "531": "Art. 531 KSH: spółki przejmujące lub nowo zawiązane wstępują w prawa i obowiązki określone w planie podziału.",
+      "533": "Art. 533 KSH: spółka dzielona sporządza pisemny plan podziału.",
+      "551": "Art. 551 KSH: spółka może być przekształcona w inną spółkę handlową, z uwzględnieniem zasad i ograniczeń ustawowych.",
+      "552": "Art. 552 KSH: spółka przekształcana staje się spółką przekształconą z chwilą wpisu do rejestru.",
+      "553": "Art. 553 KSH: spółce przekształconej przysługują prawa i obowiązki spółki przekształcanej; to podstawa zasady kontynuacji.",
+      "557": "Art. 557 KSH: do przekształcenia wymaga się sporządzenia planu przekształcenia wraz z załącznikami.",
+      "199": "Art. 199 KSH: reguluje umorzenie udziału w spółce z o.o., w tym umorzenie dobrowolne, przymusowe i przesłanki wynagrodzenia.",
+      "359": "Art. 359 KSH: reguluje umorzenie akcji w spółce akcyjnej, wymagając podstawy w statucie i zachowania ustawowej procedury."
+    };
+
+    Object.assign(articleTexts, {
+      "1": "Art. 1 KSH: określa zakres regulacji kodeksu, czyli tworzenie, organizację, funkcjonowanie, rozwiązywanie, łączenie, podział i przekształcanie spółek handlowych.",
+      "2": "Art. 2 KSH: w sprawach określonych w art. 1 § 1, które nie są uregulowane w KSH, stosuje się przepisy Kodeksu cywilnego, z uwzględnieniem właściwości stosunku spółki handlowej.",
+      "3": "Art. 3 KSH: przez umowę spółki handlowej wspólnicy albo akcjonariusze zobowiązują się dążyć do osiągnięcia wspólnego celu przez wniesienie wkładów oraz współdziałanie, jeżeli umowa albo statut tak stanowi.",
+      "9": "Art. 9 KSH: zmiana postanowień umowy spółki osobowej wymaga zgody wszystkich wspólników, chyba że umowa spółki stanowi inaczej.",
+      "10": "Art. 10 KSH: ogół praw i obowiązków wspólnika spółki osobowej może być przeniesiony na inną osobę tylko wtedy, gdy umowa spółki tak stanowi.",
+      "11": "Art. 11 KSH: spółki kapitałowe w organizacji mogą we własnym imieniu nabywać prawa, zaciągać zobowiązania, pozywać i być pozywane.",
+      "17": "Art. 17 KSH: czynność prawna dokonana bez wymaganej uchwały wspólników, walnego zgromadzenia albo rady nadzorczej może być nieważna, jeżeli ustawa przewiduje wymóg zgody.",
+      "18": "Art. 18 KSH: określa wymogi wobec członków organów i likwidatorów, w tym ograniczenia wynikające ze skazań za określone przestępstwa.",
+      "20": "Art. 20 KSH: wspólnicy albo akcjonariusze spółki kapitałowej powinni być traktowani jednakowo w takich samych okolicznościach.",
+      "21": "Art. 21 KSH: reguluje możliwość rozwiązania spółki kapitałowej przez sąd rejestrowy w określonych przypadkach wadliwości.",
+      "39": "Art. 39 § 1 KSH: każdy wspólnik spółki jawnej ma prawo i obowiązek prowadzenia spraw spółki.",
+      "88": "Art. 88 KSH: wskazuje katalog wolnych zawodów, których wykonywanie może być przedmiotem spółki partnerskiej.",
+      "96": "Art. 96 § 1 KSH: każdy partner ma prawo reprezentować spółkę samodzielnie, chyba że umowa spółki stanowi inaczej.",
+      "97": "Art. 97 § 1 KSH: umowa spółki partnerskiej może przewidywać powierzenie prowadzenia spraw i reprezentowania spółki zarządowi.",
+      "103": "Art. 103 KSH: w sprawach nieuregulowanych w dziale o spółce komandytowej stosuje się odpowiednio przepisy o spółce jawnej, chyba że ustawa stanowi inaczej.",
+      "104": "Art. 104 KSH: firma spółki komandytowej powinna zawierać nazwisko albo firmę co najmniej jednego komplementariusza oraz oznaczenie spółki komandytowej.",
+      "117": "Art. 117 KSH: spółkę komandytową reprezentują komplementariusze, których nie pozbawiono prawa reprezentowania spółki.",
+      "126": "Art. 126 KSH: do SKA stosuje się odpowiednio przepisy o spółce jawnej w zakresie stosunku komplementariuszy oraz przepisy o SA w pozostałych sprawach wskazanych w ustawie.",
+      "137": "Art. 137 KSH: spółkę komandytowo-akcyjną reprezentują komplementariusze, których nie pozbawiono prawa reprezentowania spółki.",
+      "140": "Art. 140 KSH: walne zgromadzenie w SKA podejmuje uchwały w sprawach określonych w ustawie i statucie.",
+      "142": "Art. 142 KSH: w SKA ustanawia się radę nadzorczą, jeżeli liczba akcjonariuszy przekracza ustawowy próg, a statut może przewidzieć ją także w innych przypadkach.",
+      "158": "Art. 158 § 1 KSH: jeżeli wkładem do spółki z o.o. ma być aport, umowa spółki powinna szczegółowo określać jego przedmiot, osobę wnoszącą oraz liczbę i wartość nominalną objętych udziałów.",
+      "175": "Art. 175 § 1 KSH: jeżeli wartość wkładów niepieniężnych została znacznie zawyżona, wspólnik i członkowie zarządu odpowiadają za wyrównanie brakującej wartości.",
+      "228": "Art. 228 KSH: wskazuje sprawy wymagające uchwały wspólników w spółce z o.o., m.in. zatwierdzenie sprawozdań, podział zysku i zbycie przedsiębiorstwa.",
+      "255": "Art. 255 KSH: zmiana umowy spółki z o.o. wymaga uchwały wspólników i wpisu do rejestru.",
+      "257": "Art. 257 KSH: podwyższenie kapitału zakładowego spółki z o.o. wymaga zmiany umowy spółki, chyba że umowa przewiduje uproszczony tryb.",
+      "30073": "Art. 300(73) KSH: w PSA rada dyrektorów prowadzi sprawy spółki, reprezentuje ją i sprawuje nadzór nad prowadzeniem spraw spółki.",
+      "309": "Art. 309 KSH: akcje obejmowane za wkłady niepieniężne powinny być pokryte zgodnie z zasadami określonymi dla spółki akcyjnej.",
+      "311": "Art. 311 KSH: założyciele spółki akcyjnej sporządzają sprawozdanie założycieli w przypadkach przewidzianych ustawą, zwłaszcza przy wkładach niepieniężnych.",
+      "328": "Art. 328 KSH i nast.: regulują rejestr akcjonariuszy i dematerializację akcji w spółce akcyjnej.",
+      "430": "Art. 430 KSH: zmiana statutu spółki akcyjnej wymaga uchwały walnego zgromadzenia i wpisu do rejestru.",
+      "431": "Art. 431 KSH: podwyższenie kapitału zakładowego SA wymaga zmiany statutu i następuje przez emisję nowych akcji albo podwyższenie wartości nominalnej dotychczasowych akcji.",
+      "495": "Art. 495 KSH: reguluje odpowiedzialność za zobowiązania przy połączeniu w okresie ochronnym wskazanym w ustawie.",
+      "502": "Art. 502 KSH: plan połączenia może podlegać badaniu przez biegłego w zakresie poprawności i rzetelności.",
+      "530": "Art. 530 KSH: określa dzień podziału albo dzień wydzielenia w zależności od trybu podziału.",
+      "534": "Art. 534 KSH: wskazuje elementy planu podziału, w tym opis i podział składników majątku oraz zasady przyznawania praw.",
+      "546": "Art. 546 KSH: reguluje odpowiedzialność za zobowiązania przypisane w planie podziału i ochronę wierzycieli.",
+      "558": "Art. 558 KSH: określa elementy planu przekształcenia, w tym załączniki i ustalenia wymagane do zmiany formy prawnej.",
+      "574": "Art. 574 KSH: reguluje odpowiedzialność wspólników spółki przekształcanej za zobowiązania powstałe przed dniem przekształcenia.",
+      "586": "Art. 586 KSH: przewiduje odpowiedzialność karną za niezłożenie wniosku o upadłość spółki handlowej mimo warunków uzasadniających upadłość.",
+      "587": "Art. 587 KSH: penalizuje ogłaszanie albo przedstawianie nieprawdziwych danych w określonych dokumentach i oświadczeniach spółkowych.",
+      "588": "Art. 588 KSH: dotyczy odpowiedzialności karnej za dopuszczenie do nabycia przez spółkę własnych udziałów albo akcji wbrew przepisom.",
+      "594": "Art. 594 KSH: przewiduje sankcje za naruszenie wybranych obowiązków informacyjnych i rejestrowych osób odpowiedzialnych w spółkach.",
+      "595": "Art. 595 KSH: wskazuje dodatkowe sankcje i skutki orzeczenia w sprawach dotyczących naruszeń obowiązków z KSH.",
+      "596": "Art. 596 KSH i nast.: przepisy zmieniające, przejściowe i końcowe porządkują wejście w życie kodeksu oraz relacje do wcześniejszych regulacji."
+    });
+
+    const kshGuideTopics = [
+      {
+        id: "g-intro",
+        part: "Tytuł I - Przepisy ogólne",
+        title: "Słowniczek i podstawowy podział spółek",
+        range: "art. 1-21 KSH",
+        articles: ["4", "8", "14"],
+        explanation: "Pierwszy tytuł trzeba traktować jak mapę pojęć. Art. 4 porządkuje nazwy i odróżnia spółki osobowe od kapitałowych. Art. 8 wyjaśnia, dlaczego spółka osobowa może działać samodzielnie w obrocie mimo braku osobowości prawnej. Art. 14 jest ważny przy wkładach i aportach.",
+        lawyerView: "W kazusie najpierw kwalifikuj typ spółki i rolę osoby. Dopiero potem wybieraj przepisy szczególne. Błąd na tym etapie prowadzi do złej odpowiedzialności, złego organu albo złej procedury.",
+        questions: ["Czy mamy spółkę osobową czy kapitałową?", "Czy przepis używa pojęcia wspólnik, akcjonariusz, partner, komplementariusz?", "Czy chodzi o wkład pieniężny, aport czy pracę/usługi?"]
+      },
+      {
+        id: "g-spj",
+        part: "Tytuł II - Spółki osobowe",
+        title: "Spółka jawna jako model spółki osobowej",
+        range: "art. 22-85 KSH",
+        articles: ["22", "29", "31"],
+        explanation: "Spółka jawna jest punktem odniesienia dla innych spółek osobowych. Najważniejsze są: prowadzenie przedsiębiorstwa pod firmą, reprezentacja przez wspólników i odpowiedzialność subsydiarna. W nauce prawniczej spółka jawna pomaga zrozumieć różnicę między majątkiem spółki a majątkiem wspólnika.",
+        lawyerView: "Przy roszczeniu wierzyciela badaj kolejno: dług spółki, tytuł przeciwko spółce, bezskuteczność egzekucji i dopiero potem odpowiedzialność wspólnika.",
+        questions: ["Kto reprezentował spółkę?", "Czy egzekucja z majątku spółki była bezskuteczna?", "Czy odpowiedzialność wspólnika jest solidarna i subsydiarna?"]
+      },
+      {
+        id: "g-spp",
+        part: "Tytuł II - Spółki osobowe",
+        title: "Spółka partnerska i odpowiedzialność za wolny zawód",
+        range: "art. 86-101 KSH",
+        articles: ["86", "95"],
+        explanation: "Ten rozdział trzeba czytać przez funkcję ochronną. Spółka partnerska jest dla wolnych zawodów i ogranicza odpowiedzialność partnera za cudzy błąd zawodowy. Nie oznacza jednak pełnego braku odpowiedzialności za wszystkie zobowiązania.",
+        lawyerView: "W kazusie ustal źródło długu. Jeżeli dług wynika z błędu zawodowego innego partnera, analizuj art. 95 KSH. Jeżeli dług jest zwykłym zobowiązaniem spółki, ochrona może nie działać.",
+        questions: ["Czy działalność mieści się w wolnym zawodzie?", "Który partner wykonywał usługę?", "Czy dług wynika z błędu zawodowego czy z normalnego funkcjonowania spółki?"]
+      },
+      {
+        id: "g-spk",
+        part: "Tytuł II - Spółki osobowe",
+        title: "Spółka komandytowa: dwie role wspólników",
+        range: "art. 102-124 KSH",
+        articles: ["102", "111"],
+        explanation: "Sens spółki komandytowej polega na rozdzieleniu roli komplementariusza i komandytariusza. Komplementariusz ponosi pełne ryzyko, a komandytariusz ma odpowiedzialność ograniczoną sumą komandytową.",
+        lawyerView: "Nigdy nie analizuj spółki komandytowej bez ustalenia roli konkretnej osoby. W jednym kazusie dwie osoby mogą mieć zupełnie różną odpowiedzialność.",
+        questions: ["Kto jest komplementariuszem?", "Kto jest komandytariuszem?", "Jaka jest suma komandytowa i czy wkład ją pokrywa?"]
+      },
+      {
+        id: "g-ska",
+        part: "Tytuł II - Spółki osobowe",
+        title: "Spółka komandytowo-akcyjna jako konstrukcja mieszana",
+        range: "art. 125-150 KSH",
+        articles: ["125"],
+        explanation: "SKA jest spółką osobową z elementami akcyjnymi. Ma komplementariusza odpowiadającego bez ograniczenia i akcjonariuszy uczestniczących przez akcje. Dlatego nie wolno traktować jej jak zwykłej SA.",
+        lawyerView: "W analizie najpierw rozdziel pozycję komplementariusza i akcjonariusza, potem sprawdź statut i kompetencje walnego zgromadzenia.",
+        questions: ["Czy osoba jest komplementariuszem czy akcjonariuszem?", "Czy statut modyfikuje kompetencje?", "Czy występuje rada nadzorcza?"]
+      },
+      {
+        id: "g-zoo",
+        part: "Tytuł III - Spółki kapitałowe",
+        title: "Spółka z o.o.: udziały, organy i art. 299 KSH",
+        range: "art. 151-300 KSH",
+        articles: ["151", "154", "201", "212", "227", "299"],
+        explanation: "Spółka z o.o. jest osobą prawną i działa przez organy. Wspólnik zasadniczo nie odpowiada za długi spółki. Dla prawnika kluczowy jest jednak art. 299 KSH, bo przenosi analizę z właściciela na członków zarządu przy bezskutecznej egzekucji.",
+        lawyerView: "W odpowiedzi egzaminacyjnej oddziel: odpowiedzialność spółki, brak odpowiedzialności wspólnika, możliwą odpowiedzialność zarządu i przesłanki egzoneracyjne.",
+        questions: ["Czy dłużnikiem jest spółka czy członek zarządu?", "Czy egzekucja była bezskuteczna?", "Czy członek zarządu ma przesłanki obrony?"]
+      },
+      {
+        id: "g-psa",
+        part: "Tytuł III - Spółki kapitałowe",
+        title: "Prosta spółka akcyjna: akcje beznominałowe",
+        range: "art. 300(1)-300(134) KSH",
+        articles: ["3001", "3002", "30052"],
+        explanation: "PSA jest odrębną spółką kapitałową, a nie uproszczoną SA. Najważniejsze różnice to akcje bez wartości nominalnej, kapitał akcyjny i możliwość modelu z radą dyrektorów.",
+        lawyerView: "Przy PSA unikaj automatycznego stosowania schematów z SA. Sprawdź, który model organów wybrano i jak działa rejestr akcjonariuszy.",
+        questions: ["Czy akcje mają wartość nominalną?", "Czy działa zarząd czy rada dyrektorów?", "Jak zorganizowano rejestr akcjonariuszy?"]
+      },
+      {
+        id: "g-sa",
+        part: "Tytuł III - Spółki kapitałowe",
+        title: "Spółka akcyjna: formalizm statutu i organów",
+        range: "art. 301-490 KSH",
+        articles: ["301", "304", "308", "368", "382", "393"],
+        explanation: "SA wymaga pracy z formalizmem. Statut, zarząd, rada nadzorcza i walne zgromadzenie tworzą system kompetencji. Błąd w organie albo uchwale może przesądzić o wadliwości czynności.",
+        lawyerView: "W kazusie o SA zawsze pytaj: który organ miał kompetencję, czy statut coś zmienia i czy uchwała była wymagana.",
+        questions: ["Czy sprawa należy do walnego zgromadzenia?", "Czy rada nadzorcza jest wymagana?", "Czy statut zawiera szczególną regulację?"]
+      },
+      {
+        id: "g-merger",
+        part: "Tytuł IV - Łączenie, podział i przekształcanie",
+        title: "Łączenie spółek: plan, uchwały, sukcesja",
+        range: "art. 491-527 KSH",
+        articles: ["491", "492", "494", "498", "499"],
+        explanation: "Łączenie opiera się na sekwencji: dopuszczalność, tryb, plan połączenia, uchwały, wpis i sukcesja. Najważniejszy skutek praktyczny to przejście praw i obowiązków na spółkę przejmującą albo nową.",
+        lawyerView: "Nie zaczynaj od samej uchwały. Najpierw sprawdź, czy tryb jest dopuszczalny i czy plan połączenia zawiera wymagane elementy.",
+        questions: ["Czy to przejęcie czy zawiązanie nowej spółki?", "Czy jest plan połączenia?", "Jakie prawa i obowiązki przechodzą?"]
+      },
+      {
+        id: "g-division",
+        part: "Tytuł IV - Łączenie, podział i przekształcanie",
+        title: "Podział spółki: przypisanie majątku",
+        range: "art. 528-550 KSH",
+        articles: ["528", "529", "531", "533"],
+        explanation: "Podział jest trudny, bo wymaga nie tylko znajomości trybu, ale też przypisania składników majątku, praw i zobowiązań. Plan podziału jest centrum analizy.",
+        lawyerView: "W odpowiedzi prawniczej narysuj przepływ majątku: co zostaje, co przechodzi i do której spółki. Potem dopiero oceniaj odpowiedzialność.",
+        questions: ["Jaki tryb podziału wybrano?", "Czy plan wskazuje składniki majątku?", "Kto odpowiada za zobowiązania po podziale?"]
+      },
+      {
+        id: "g-transform",
+        part: "Tytuł IV - Łączenie, podział i przekształcanie",
+        title: "Przekształcenie: kontynuacja zamiast likwidacji",
+        range: "art. 551-584(13) KSH",
+        articles: ["551", "552", "553", "557"],
+        explanation: "Przekształcenie zmienia formę prawną bez likwidowania działalności. Kluczowa jest zasada kontynuacji: spółka przekształcona pozostaje nośnikiem praw i obowiązków spółki przekształcanej.",
+        lawyerView: "Jeżeli ktoś twierdzi, że umowy automatycznie wygasają, sprawdź art. 553 KSH i dopiero potem szukaj wyjątków w ustawie, decyzji administracyjnej lub umowie.",
+        questions: ["Jaka spółka jest przekształcana?", "Kiedy następuje dzień przekształcenia?", "Czy istnieją wyjątki od kontynuacji?"]
+      },
+      {
+        id: "g-redemption",
+        part: "Wybrane czynności korporacyjne",
+        title: "Umorzenie udziałów i akcji",
+        range: "art. 199 i 359 KSH",
+        articles: ["199", "359"],
+        explanation: "Umorzenie unicestwia prawo udziałowe. W sp. z o.o. analizujesz art. 199 KSH, a w SA art. 359 KSH. Najważniejsze są podstawa w umowie albo statucie, tryb i wynagrodzenie.",
+        lawyerView: "Nie wystarczy napisać, że wspólnik wychodzi ze spółki. Trzeba wskazać tryb umorzenia, podstawę, uchwałę i skutek dla kapitału lub struktury praw.",
+        questions: ["Czy umowa/statut przewiduje umorzenie?", "Czy jest dobrowolne czy przymusowe?", "Czy przewidziano wynagrodzenie?"]
+      },
+      {
+        id: "g-scope",
+        part: "Tytuł I - Przepisy ogólne",
+        title: "Zakres KSH i relacja do Kodeksu cywilnego",
+        range: "art. 1-3 KSH",
+        articles: ["1", "2", "3"],
+        explanation: "Początek KSH określa, czym kodeks się zajmuje i kiedy trzeba sięgnąć do Kodeksu cywilnego. To ważne przy lukach w KSH: nie pomijamy prawa cywilnego, ale stosujemy je z uwzględnieniem natury spółki handlowej.",
+        lawyerView: "Jeżeli w kazusie brakuje przepisu szczególnego KSH, wskaż art. 2 KSH i dopiero wtedy rozważ odpowiednie zastosowanie KC.",
+        questions: ["Czy sprawa mieści się w art. 1 KSH?", "Czy KSH reguluje ją wprost?", "Czy można zastosować KC przez art. 2 KSH?"]
+      },
+      {
+        id: "g-general-obligations",
+        part: "Tytuł I - Przepisy ogólne",
+        title: "Zgody korporacyjne, równe traktowanie i wymogi wobec organów",
+        range: "art. 17-21 KSH",
+        articles: ["17", "18", "20", "21"],
+        explanation: "Ten fragment ma znaczenie praktyczne przy ważności czynności i obsadzie organów. Art. 17 jest kluczowy, gdy czynność wymaga uchwały. Art. 18 ogranicza osoby, które mogą pełnić funkcje w organach.",
+        lawyerView: "Przy każdej większej czynności spółki pytaj, czy KSH, umowa lub statut wymagają zgody organu. Brak zgody może zmienić ocenę ważności czynności.",
+        questions: ["Czy była wymagana uchwała?", "Czy osoba może pełnić funkcję w organie?", "Czy wspólników lub akcjonariuszy potraktowano jednakowo?"]
+      },
+      {
+        id: "g-personal-rights",
+        part: "Tytuł II - Spółki osobowe",
+        title: "Zmiana umowy i przeniesienie ogółu praw w spółce osobowej",
+        range: "art. 9-10 KSH",
+        articles: ["9", "10"],
+        explanation: "Spółki osobowe są oparte na relacji wspólników, dlatego zmiana umowy i przeniesienie ogółu praw i obowiązków wymagają szczególnej ostrożności. Art. 10 wymaga podstawy w umowie spółki.",
+        lawyerView: "Jeżeli ktoś chce wyjść ze spółki osobowej przez przeniesienie praw, najpierw sprawdź, czy umowa w ogóle na to pozwala.",
+        questions: ["Czy umowa przewiduje przeniesienie ogółu praw?", "Czy wszyscy wspólnicy muszą wyrazić zgodę?", "Czy zmieniono umowę spółki?"]
+      },
+      {
+        id: "g-zoo-capital",
+        part: "Tytuł III - Spółki kapitałowe",
+        title: "Spółka z o.o.: kapitał, aport, kontrola i zmiana umowy",
+        range: "art. 152-300 KSH",
+        articles: ["154", "158", "175", "212", "228", "255", "257"],
+        explanation: "Poza art. 299 KSH w sp. z o.o. trzeba znać mechanizmy kapitałowe i kontrolne. Kapitał zakładowy, aport, prawo kontroli, uchwały wspólników i zmiana umowy spółki tworzą typowe problemy kazusowe.",
+        lawyerView: "W zadaniu o sp. z o.o. oddziel pytania właścicielskie od zarządczych: wspólnicy podejmują uchwały w sprawach zastrzeżonych, zarząd prowadzi sprawy i reprezentuje spółkę.",
+        questions: ["Czy aport opisano zgodnie z KSH?", "Czy sprawa wymaga uchwały wspólników?", "Czy zmiana umowy została wpisana do rejestru?"]
+      },
+      {
+        id: "g-psa-organs",
+        part: "Tytuł III - Spółki kapitałowe",
+        title: "PSA: kapitał akcyjny, rejestr akcjonariuszy i organy",
+        range: "art. 300(1)-300(134) KSH",
+        articles: ["3001", "3002", "30052", "30073"],
+        explanation: "PSA ma własną logikę: akcje beznominałowe, kapitał akcyjny i elastyczny model organów. Szczególnie ważne jest odróżnienie zarządu od rady dyrektorów.",
+        lawyerView: "Nie rozwiązuj kazusu PSA przez automatyczne kopiowanie rozwiązań z SA. Sprawdź przepisy działu o PSA oraz umowę spółki.",
+        questions: ["Czy wybrano zarząd czy radę dyrektorów?", "Jak działa rejestr akcjonariuszy?", "Czy kapitał jest zakładowy czy akcyjny?"]
+      },
+      {
+        id: "g-sa-capital",
+        part: "Tytuł III - Spółki kapitałowe",
+        title: "SA: statut, akcje, rejestr akcjonariuszy i zmiana kapitału",
+        range: "art. 301-490 KSH",
+        articles: ["304", "308", "309", "311", "328", "430", "431"],
+        explanation: "W spółce akcyjnej formalizm jest regułą. Statut określa ustrój, akcje podlegają szczególnym zasadom, a zmiana statutu i kapitału wymaga uchwał oraz wpisów.",
+        lawyerView: "Przy SA zawsze łącz analizę przepisu z treścią statutu. Wiele odpowiedzi zależy od tego, czy statut przewiduje dodatkowe wymogi albo uprawnienia.",
+        questions: ["Czy statut zawiera wymaganą regulację?", "Czy zmiana wymaga wpisu do KRS?", "Czy aport wymaga sprawozdania założycieli lub badania?"]
+      },
+      {
+        id: "g-krs-effects",
+        part: "Tytuł IV - Łączenie, podział i przekształcanie",
+        title: "Wpis do KRS jako moment skutku reorganizacji",
+        range: "art. 493, 530, 552 KSH",
+        articles: ["494", "530", "552", "553"],
+        explanation: "Przy reorganizacjach dzień wpisu do rejestru często decyduje o skutku prawnym. Połączenie, podział i przekształcenie mają różne konstrukcje, ale każdorazowo trzeba ustalić moment rejestrowy.",
+        lawyerView: "W kazusie zawsze wskaż datę skutku: dzień połączenia, dzień podziału, dzień wydzielenia albo dzień przekształcenia.",
+        questions: ["Kiedy nastąpił wpis?", "Jaki skutek wiąże się z tym wpisem?", "Czy działa sukcesja czy kontynuacja?"]
+      },
+      {
+        id: "g-reorg-liability",
+        part: "Tytuł IV - Łączenie, podział i przekształcanie",
+        title: "Odpowiedzialność i ochrona wierzycieli przy reorganizacjach",
+        range: "art. 494-495, 531, 546, 574 KSH",
+        articles: ["494", "495", "531", "546", "574"],
+        explanation: "Reorganizacja nie może być analizowana wyłącznie jako techniczna zmiana wpisu. Trzeba sprawdzić, kto przejmuje prawa i obowiązki oraz kto odpowiada wobec wierzycieli.",
+        lawyerView: "Przy wierzycielu rozpisz ścieżkę: dłużnik przed reorganizacją, dłużnik po reorganizacji, przepis o sukcesji lub odpowiedzialności solidarnej.",
+        questions: ["Kto był dłużnikiem przed czynnością?", "Kto jest dłużnikiem po wpisie?", "Czy ustawa przewiduje odpowiedzialność dodatkową?"]
+      },
+      {
+        id: "g-penal",
+        part: "Tytuł V - Przepisy karne",
+        title: "Odpowiedzialność karna i sankcyjna w KSH",
+        range: "art. 586-595 KSH",
+        articles: ["586", "587", "588", "594", "595"],
+        explanation: "Przepisy karne KSH uzupełniają odpowiedzialność cywilną i korporacyjną. Dotyczą m.in. niewykonania obowiązków zarządczych, nieprawdziwych danych i naruszeń obowiązków informacyjnych.",
+        lawyerView: "W kazusie sankcyjnym oddziel odpowiedzialność spółki od odpowiedzialności osoby pełniącej funkcję. Zwróć uwagę na obowiązek, podmiot obowiązany i skutek naruszenia.",
+        questions: ["Kto był adresatem obowiązku?", "Jaki obowiązek naruszono?", "Czy przepis przewiduje grzywnę, karę ograniczenia wolności albo inną sankcję?"]
+      },
+      {
+        id: "g-final",
+        part: "Tytuł VI - Zmiany, przepisy przejściowe i końcowe",
+        title: "Przepisy przejściowe i końcowe",
+        range: "art. 596 i nast. KSH",
+        articles: ["596"],
+        explanation: "Końcowe przepisy KSH mają mniejsze znaczenie w codziennej analizie typów spółek, ale pomagają zrozumieć wejście kodeksu w życie i przejście ze wcześniejszych regulacji.",
+        lawyerView: "Sięgaj do tej części głównie wtedy, gdy kazus dotyczy stanu historycznego, wejścia w życie przepisów albo relacji do poprzednich regulacji.",
+        questions: ["Czy stan faktyczny jest historyczny?", "Czy trzeba zastosować przepisy przejściowe?", "Czy późniejsza nowelizacja zmieniła ocenę?"]
+      }
+    ];
 
     const cards = [
       {
@@ -797,17 +1497,25 @@
       { q: "Jaki dokument jest osią podziału spółki?", a: "Plan podziału", o: ["Plan podziału", "Lista obecności", "Regulamin zarządu"] },
       { q: "Która spółka ma obowiązkową radę nadzorczą?", a: "Spółka akcyjna", o: ["Spółka jawna", "Spółka akcyjna", "Spółka partnerska"] },
       { q: "Co wyróżnia przekształcenie?", a: "Kontynuacja działalności w innej formie", o: ["Likwidacja działalności", "Kontynuacja działalności w innej formie", "Zawsze sprzedaż przedsiębiorstwa"] },
-      { q: "Jakie akcje ma PSA?", a: "Beznominałowe", o: ["Beznominałowe", "Wyłącznie imienne z nominałem", "Wyłącznie na okaziciela"] }
+      { q: "Jakie akcje ma PSA?", a: "Beznominałowe", o: ["Beznominałowe", "Wyłącznie imienne z nominałem", "Wyłącznie na okaziciela"] },
+      { q: "Co powinno znaleźć się w analizie art. 299 KSH?", a: "Bezskuteczność egzekucji przeciwko spółce", o: ["Bezskuteczność egzekucji przeciwko spółce", "Wyłącznie fakt bycia wspólnikiem", "Zawsze uchwała walnego zgromadzenia"] },
+      { q: "Jaki jest zasadniczy skutek przekształcenia?", a: "Kontynuacja praw i obowiązków", o: ["Wygaśnięcie wszystkich umów", "Kontynuacja praw i obowiązków", "Automatyczna likwidacja majątku"] },
+      { q: "Co jest pierwszym krokiem przy analizie spółki komandytowej?", a: "Ustalenie roli wspólnika", o: ["Ustalenie roli wspólnika", "Sprawdzenie rady nadzorczej", "Założenie braku odpowiedzialności wszystkich osób"] },
+      { q: "Który dokument jest centralny przy połączeniu spółek?", a: "Plan połączenia", o: ["Plan połączenia", "Regulamin pracy", "Protokół zdawczo-odbiorczy"] }
     ];
 
     let activeId = cards[0].id;
+    let currentPage = "review";
     let mode = "learn";
     let seen = new Set();
     let flashBack = false;
     let quizIndex = 0;
+    let caseIndex = 0;
+    let activeGuideId = kshGuideTopics[0].id;
 
     const tabs = document.querySelector("#tabs");
     const content = document.querySelector("#content");
+    const pageButtons = document.querySelectorAll(".page-btn");
     const progressText = document.querySelector("#progressText");
     const progressBar = document.querySelector("#progressBar");
     const flash = document.querySelector("#flash");
@@ -834,8 +1542,12 @@
       return `
         <h3>Podstawa KSH</h3>
         <ul class="list">${articles.map(item => `<li>${item}</li>`).join("")}</ul>
-        <a class="source-link" href="${kshSourceUrl}" target="_blank" rel="noopener">Otwórz KSH w GOFIN</a>
       `;
+    }
+
+    function renderFactBasis(card, label) {
+      const basis = factBasis[card.id]?.[label];
+      return basis ? `<span class="basis">Podstawa: ${basis}</span>` : "";
     }
 
     function renderAnalysis(card) {
@@ -871,6 +1583,128 @@
       `;
     }
 
+    function renderLegalProfile(card) {
+      const profile = legalProfiles[card.id];
+      if (!profile) return "";
+      return `
+        <h3>Analiza prawnicza</h3>
+        <div class="legal-grid">
+          <div class="legal-box">
+            <b>Teza</b>
+            <span>${profile.thesis}</span>
+          </div>
+          <div class="legal-box">
+            <b>Przesłanki</b>
+            <ul class="list">${profile.elements.map(item => `<li>${item}</li>`).join("")}</ul>
+          </div>
+          <div class="legal-box">
+            <b>Pułapki</b>
+            <ul class="list">${profile.traps.map(item => `<li>${item}</li>`).join("")}</ul>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCase() {
+      const item = legalCases[caseIndex % legalCases.length];
+      content.innerHTML = `
+        <h2>Kazus: ${item.title}</h2>
+        <div class="case-box">
+          <div>
+            <h3>Stan faktyczny</h3>
+            <p class="summary">${item.facts}</p>
+          </div>
+          <div class="case-question">
+            <h3>Pytanie</h3>
+            <p>${item.question}</p>
+          </div>
+          <div>
+            <h3>Model odpowiedzi</h3>
+            <p class="summary">${item.answer}</p>
+          </div>
+          <div>
+            <h3>Checklista prawnika</h3>
+            <ul class="list">${item.checklist.map(point => `<li>${point}</li>`).join("")}</ul>
+          </div>
+          <button class="answer" id="nextCase">Następny kazus</button>
+        </div>
+      `;
+    }
+
+    function articleChip(articleId) {
+      const text = articleTexts[articleId] || "Brak lokalnie opracowanej treści artykułu.";
+      const label = articleId.startsWith("300") ? `art. ${articleId.replace("300", "300^")}` : `art. ${articleId}`;
+      return `<span class="article-chip" tabindex="0" data-text="${escapeAttr(text)}">${label} KSH</span>`;
+    }
+
+    function guideParts() {
+      return [...new Set(kshGuideTopics.map(topic => topic.part))];
+    }
+
+    function filteredGuideTopics() {
+      const query = (document.querySelector("#guideSearch")?.value || "").toLowerCase();
+      const part = document.querySelector("#guidePart")?.value || "all";
+      return kshGuideTopics.filter(topic => {
+        const haystack = `${topic.title} ${topic.part} ${topic.range} ${topic.explanation} ${topic.lawyerView}`.toLowerCase();
+        return (part === "all" || topic.part === part) && (!query || haystack.includes(query));
+      });
+    }
+
+    function renderGuideDetail(topic) {
+      return `
+        <h2>${topic.title}</h2>
+        <div class="meta">
+          <span class="pill">${topic.part}</span>
+          <span class="pill">${topic.range}</span>
+        </div>
+        <h3>Artykuły do najechania</h3>
+        <p>${topic.articles.map(articleChip).join("")}</p>
+        <h3>Opracowanie</h3>
+        <p class="summary">${topic.explanation}</p>
+        <h3>Interpretacja prawnicza</h3>
+        <p class="summary">${topic.lawyerView}</p>
+        <h3>Pytania kontrolne</h3>
+        <ul class="list">${topic.questions.map(question => `<li>${question}</li>`).join("")}</ul>
+        <div class="callout"><strong>Metoda:</strong> po przeczytaniu rozdziału nazwij normę, wypisz przesłanki, wskaż skutek prawny i sprawdź wyjątki.</div>
+      `;
+    }
+
+    function renderGuide() {
+      const parts = guideParts();
+      const selectedPart = document.querySelector("#guidePart")?.value || "all";
+      const query = document.querySelector("#guideSearch")?.value || "";
+      const topics = filteredGuideTopics();
+      const activeTopic = topics.find(topic => topic.id === activeGuideId) || topics[0] || kshGuideTopics[0];
+      activeGuideId = activeTopic.id;
+      content.innerHTML = `
+        <h2>Przewodnik po KSH</h2>
+        <p class="summary">Ta strona prowadzi przez ustawę działami i rozdziałami. Wybierz temat, a zobaczysz opracowanie, interpretację i artykuły KSH dostępne po najechaniu.</p>
+        <div class="guide-tools">
+          <input id="guideSearch" type="search" value="${escapeAttr(query)}" placeholder="Filtruj: zarząd, odpowiedzialność, podział, art. 299...">
+          <select id="guidePart">
+            <option value="all">Wszystkie działy</option>
+            ${parts.map(part => `<option value="${part}" ${part === selectedPart ? "selected" : ""}>${part}</option>`).join("")}
+          </select>
+        </div>
+        <div class="guide-layout">
+          <div class="guide-list">
+            ${topics.map(topic => `
+              <button class="guide-topic ${topic.id === activeTopic.id ? "active" : ""}" data-guide-id="${topic.id}">
+                ${topic.title}
+                <small>${topic.part} | ${topic.range}</small>
+              </button>
+            `).join("") || "<p class='summary'>Brak tematów dla wybranego filtra.</p>"}
+          </div>
+          <div class="card">${renderGuideDetail(activeTopic)}</div>
+        </div>
+      `;
+      const search = document.querySelector("#guideSearch");
+      if (search) {
+        search.focus();
+        search.setSelectionRange(search.value.length, search.value.length);
+      }
+    }
+
     function renderTabs() {
       tabs.innerHTML = cards.map(card => `
         <button class="tab ${card.id === activeId ? "active" : ""}" data-id="${card.id}">
@@ -891,14 +1725,15 @@
         <p class="summary">${card.summary}</p>
         <div class="facts">
           ${Object.entries(card.facts).map(([label, value]) => `
-            <div class="fact"><strong>${lawTip(label)}</strong>${value}</div>
+            <div class="fact"><strong>${lawTip(label)}</strong>${value}${renderFactBasis(card, label)}</div>
           `).join("")}
         </div>
         <h3>Zapamiętaj</h3>
         <ul class="list">${card.remember.map(item => `<li>${item}</li>`).join("")}</ul>
+        ${renderLegalProfile(card)}
         ${renderAnalysis(card)}
         ${renderArticles(card)}
-        <div class="callout"><strong>Tryb nauki:</strong> porównuj odpowiedzialność, organy i kapitał. To najczęściej pozwala szybko odróżnić podobne konstrukcje.</div>
+        <div class="callout"><strong>Tryb prawniczy:</strong> zaczynaj od kwalifikacji, potem wskaż przepis, przesłanki, skutek prawny i dopiero na końcu krótką konkluzję.</div>
       `;
       renderProgress();
       renderFlash();
@@ -965,11 +1800,20 @@
     }
 
     function render() {
+      document.body.classList.toggle("guide-page", currentPage === "guide");
+      pageButtons.forEach(btn => btn.classList.toggle("active", btn.dataset.page === currentPage));
+
+      if (currentPage === "guide") {
+        renderGuide();
+        return;
+      }
+
       renderTabs();
       document.querySelectorAll(".mode-btn").forEach(btn => btn.classList.toggle("active", btn.dataset.mode === mode));
       if (mode === "learn") renderLearn();
       if (mode === "quiz") renderQuiz();
       if (mode === "compare") renderCompare();
+      if (mode === "case") renderCase();
     }
 
     tabs.addEventListener("click", event => {
@@ -983,6 +1827,13 @@
     document.querySelectorAll(".mode-btn").forEach(button => {
       button.addEventListener("click", () => {
         mode = button.dataset.mode;
+        render();
+      });
+    });
+
+    pageButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        currentPage = button.dataset.page;
         render();
       });
     });
@@ -1010,10 +1861,24 @@
           renderQuiz();
         }, 1100);
       }
+      if (event.target.closest("#nextCase")) {
+        caseIndex++;
+        renderCase();
+      }
+      const guideButton = event.target.closest(".guide-topic");
+      if (guideButton) {
+        activeGuideId = guideButton.dataset.guideId;
+        renderGuide();
+      }
     });
 
     content.addEventListener("change", event => {
       if (event.target.matches("#leftSelect, #rightSelect")) updateCompare();
+      if (event.target.matches("#guidePart")) renderGuide();
+    });
+
+    content.addEventListener("input", event => {
+      if (event.target.matches("#guideSearch")) renderGuide();
     });
 
     flash.addEventListener("click", flipFlash);
