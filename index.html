@@ -688,7 +688,13 @@
       "aport": "KSH art. 14 oraz przepisy szczególne dla danego typu spółki, np. art. 158 i art. 309.",
       "dobrowolne": "KSH art. 199 dla udziałów w sp. z o.o.; art. 359 dla akcji w SA.",
       "przymusowe": "KSH art. 199 i art. 359 - umorzenie wymaga podstawy w umowie albo statucie.",
-      "wynagrodzenie": "KSH art. 199 i art. 359 - zasady wynagrodzenia przy umorzeniu."
+      "wynagrodzenie": "KSH art. 199 i art. 359 - zasady wynagrodzenia przy umorzeniu.",
+      "business judgment rule": "Reguła biznesowej oceny — członek zarządu nie odpowiada za szkodę, jeśli działał w granicach uzasadnionego ryzyka gospodarczego, w dobrej wierze i w interesie spółki (art. 293 § 2 KSH i art. 483 § 2 KSH).",
+      "actio pro socio": "Powództwo wspólnika lub akcjonariusza wytaczane w imieniu spółki o naprawienie szkody wyrządzonej spółce, gdy sama spółka nie dochodzi roszczenia w terminie (art. 295 KSH i art. 486 KSH).",
+      "absolutorium": "Uchwała zgromadzenia wspólników lub walnego zgromadzenia zatwierdzająca wykonanie obowiązków przez członka organu; ogranicza późniejsze roszczenia za działania objęte jej zakresem.",
+      "przesłanki egzoneracyjne": "Okoliczności wyłączające odpowiedzialność z art. 299 KSH: terminowe złożenie wniosku o upadłość, brak szkody wierzyciela mimo niezłożenia wniosku, niezawinione niezłożenie wniosku.",
+      "szkoda": "Przy odpowiedzialności zarządu wobec spółki KSH wymaga wykazania szkody, winy i związku przyczynowego (art. 293 § 1, art. 300^130, art. 483 § 1 KSH).",
+      "należyta staranność": "Miernik staranności zarządu wyższy niż ogólne kryterium z KC — wynikający z zawodowego charakteru działalności (art. 293 § 2, art. 483 § 2 KSH)."
     };
 
     const keyArticles = {
@@ -707,7 +713,10 @@
       division: ["art. 528 KSH - dopuszczalność podziału", "art. 529 KSH - tryby podziału", "art. 531 KSH - sukcesja przy podziale", "art. 533-534 KSH - plan podziału"],
       transform: ["art. 551 KSH - dopuszczalność przekształcenia", "art. 552 KSH - dzień przekształcenia", "art. 553 KSH - kontynuacja praw i obowiązków", "art. 557-558 KSH - plan przekształcenia"],
       aport: ["art. 14 KSH - wkłady i ograniczenia", "art. 158 KSH - aport w sp. z o.o.", "art. 309 KSH - wkłady w SA"],
-      redemption: ["art. 199 KSH - umorzenie udziałów w sp. z o.o.", "art. 359 KSH - umorzenie akcji w SA"]
+      redemption: ["art. 199 KSH - umorzenie udziałów w sp. z o.o.", "art. 359 KSH - umorzenie akcji w SA"],
+      "zarzad-spolka": ["art. 291 KSH - obowiązek staranności", "art. 293 KSH - odpowiedzialność wobec sp. z o.o.", "art. 300^130 KSH - odpowiedzialność wobec PSA", "art. 483 KSH - odpowiedzialność wobec SA"],
+      "zarzad-osoby": ["art. 299 KSH - odpowiedzialność wobec wierzycieli sp. z o.o.", "art. 300^133 KSH - odpowiedzialność wobec wierzycieli PSA", "art. 21 KSH - ogólny kontekst spółek kapitałowych"],
+      "zarzad-wspolnicy": ["art. 295 KSH - actio pro socio w sp. z o.o.", "art. 300^132 KSH - actio pro socio w PSA", "art. 486 KSH - actio pro socio w SA", "art. 484 KSH - absolutorium w SA", "art. 229 KSH - absolutorium w sp. z o.o."]
     };
 
     const factBasis = {
@@ -806,6 +815,24 @@
         "Dokumenty": "art. 199 § 2 i art. 359 § 2 KSH",
         "Skutek": "art. 199 § 6-7 i art. 360 § 1 KSH",
         "Ryzyko": "art. 199 § 2-3 i art. 359 § 2 KSH"
+      },
+      "zarzad-spolka": {
+        "Sp. z o.o.": "art. 293 § 1 KSH",
+        "PSA": "art. 300^130 § 1 KSH",
+        "SA": "art. 483 § 1 KSH",
+        "Wyłączenie": "art. 293 § 2 KSH i art. 483 § 2 KSH (business judgment rule)"
+      },
+      "zarzad-osoby": {
+        "Sp. z o.o.": "art. 299 § 1 KSH",
+        "PSA": "art. 300^133 KSH",
+        "SA": "brak bezpośredniego odpowiednika art. 299; zastosowanie KC i prawa upadłościowego",
+        "Obrona": "art. 299 § 2 KSH"
+      },
+      "zarzad-wspolnicy": {
+        "Sp. z o.o.": "art. 295 § 1 KSH",
+        "PSA": "art. 300^132 KSH",
+        "SA": "art. 486 § 1 KSH",
+        "Absolutorium": "art. 229 KSH (sp. z o.o.) i art. 484 KSH (SA)"
       }
     };
 
@@ -889,6 +916,21 @@
         thesis: "Umorzenie jest dopuszczalne tylko w trybie i na podstawie przewidzianej w KSH oraz umowie albo statucie.",
         elements: ["podstawa umowna/statutowa", "tryb", "uchwała", "wynagrodzenie", "skutek kapitałowy"],
         traps: ["brak podstawy w umowie lub statucie", "pomijanie wynagrodzenia", "mylenie umorzenia z nabyciem własnych udziałów"]
+      },
+      "zarzad-spolka": {
+        thesis: "Zarząd odpowiada wobec spółki za szkodę wyrządzoną naruszeniem prawa lub umowy/statutu — przy podwyższonym mierniki staranności i z możliwością obrony przez business judgment rule.",
+        elements: ["działanie lub zaniechanie sprzeczne z prawem albo umową/statutem", "szkoda spółki", "wina (domniemanie winy)", "związek przyczynowy", "brak przesłanek z business judgment rule"],
+        traps: ["stosowanie ogólnego miernika staranności z KC zamiast zawodowego z KSH", "pominięcie business judgment rule jako przesłanki obronnej", "utożsamianie absolutorium z brakiem szkody", "pomijanie odpowiedzialności solidarnej przy wieloosobowym zarządzie"]
+      },
+      "zarzad-osoby": {
+        thesis: "Odpowiedzialność zarządu wobec wierzycieli spółki (art. 299 KSH) to odpowiedzialność wyjątkowa — aktualizuje się dopiero po bezskutecznej egzekucji ze spółki i obejmuje wyłącznie sp. z o.o. oraz PSA (art. 300^133 KSH); w SA brak bezpośredniego odpowiednika.",
+        elements: ["zobowiązanie spółki (istniejące w czasie pełnienia funkcji)", "bezskuteczność egzekucji ze spółki", "pełnienie funkcji członka zarządu w czasie powstania długu", "brak przesłanek egzoneracyjnych"],
+        traps: ["pozywanie zarządu bez uprzedniej próby egzekucji ze spółki", "ignorowanie terminu właściwego do złożenia wniosku o upadłość", "zakładanie odpowiedzialności zarządu SA na zasadach art. 299 KSH — ta norma nie obowiązuje w SA", "mylenie odpowiedzialności cywilnej z karną z art. 586 KSH"]
+      },
+      "zarzad-wspolnicy": {
+        thesis: "Wspólnik lub akcjonariusz może dochodzić naprawienia szkody wyrządzonej spółce (actio pro socio) wyłącznie gdy spółka sama tego nie robi — wyrok zapada na rzecz spółki, nie wspólnika.",
+        elements: ["szkoda wyrządzona spółce", "bierność spółki przez rok od ujawnienia czynu", "legitymacja wspólnika/akcjonariusza", "powództwo wytaczane w imieniu i na rzecz spółki"],
+        traps: ["wytaczanie powództwa przed upływem rocznego terminu dla spółki", "dochodzenie odszkodowania na rzecz własną zamiast spółki", "mylenie actio pro socio z roszczeniem odszkodowawczym wspólnika z własnych szkód", "pominięcie wpływu absolutorium na możliwość wytoczenia powództwa"]
       }
     };
 
@@ -927,6 +969,20 @@
         question: "Czy to prawidłowe rozumowanie?",
         answer: "Co do zasady nie. Przy przekształceniu działa zasada kontynuacji. Spółka przekształcona pozostaje podmiotem praw i obowiązków spółki przekształcanej, z zastrzeżeniem przepisów szczególnych.",
         checklist: ["art. 551 KSH", "dzień przekształcenia", "art. 553 KSH", "wyjątki ustawowe lub umowne"]
+      },
+      {
+        title: "Wierzyciel a zarząd sp. z o.o. (art. 299 KSH)",
+        facts: "Dostawca ma prawomocny wyrok przeciwko spółce z o.o. na kwotę 120 000 zł. Komornik stwierdził bezskuteczność egzekucji — spółka nie ma środków ani majątku. W czasie, gdy powstał dług, zarząd spółki składał się z dwóch osób. Jedna z nich twierdzi, że we właściwym czasie złożono wniosek o ogłoszenie upadłości.",
+        question: "Jak analizować odpowiedzialność członków zarządu i jakie mają możliwości obrony?",
+        answer: "Art. 299 § 1 KSH: po wykazaniu bezskuteczności egzekucji odpowiedzialność solidarna obu członków zarządu jest co do zasady aktualna. Kluczowy jest teraz art. 299 § 2 KSH — przesłanki egzoneracyjne. Członek, który twierdzi, że złożono wniosek we właściwym czasie, musi to wykazać. Właściwy czas to moment, gdy zachodzą przesłanki upadłości, a nie gdy spółka całkowicie traci płynność. Drugi członek musi samodzielnie wykazać własną przesłankę obronną.",
+        checklist: ["ustal dług spółki i tytuł wykonawczy", "wykaż bezskuteczność egzekucji (protokół komornika lub oczywistość)", "zidentyfikuj skład zarządu w czasie powstania długu", "zbadaj, czy i kiedy złożono wniosek o upadłość", "oceń, czy wniosek złożono we właściwym czasie", "sprawdź przesłanki obrony każdego z członków zarządu oddzielnie"]
+      },
+      {
+        title: "Actio pro socio — wspólnik dochodzi roszczeń za spółkę",
+        facts: "Prezes zarządu spółki z o.o. zawarł kontrakt z własną firmą jednoosobową, wyraźnie zawyżając wynagrodzenie za usługi — spółka poniosła stratę 80 000 zł. Zgromadzenie wspólników udzieliło mu absolutorium za dany rok obrotowy. Drugi wspólnik (40% udziałów) chce dochodzić naprawienia szkody na rzecz spółki.",
+        question: "Czy absolutorium blokuje powództwo? Jak ocenić legitymację wspólnika?",
+        answer: "Absolutorium z art. 229 KSH ogranicza roszczenia wyłącznie za działania znane wspólnikom w chwili głosowania. Jeżeli zawyżone wynagrodzenie nie było ujawnione przed głosowaniem nad absolutorium, nie jest nim objęte. Wspólnik ma legitymację czynną na podstawie art. 295 KSH — może wytoczyć powództwo po bezskutecznym upływie roku od ujawnienia czynu. Wyrok zapada na rzecz spółki, nie wspólnika.",
+        checklist: ["ustal, czy rok od ujawnienia czynu upłynął bez działania spółki", "zbadaj zakres absolutorium — czy obejmowało transakcję z podmiotem powiązanym", "potwierdź legitymację czynną powoda (jest wspólnikiem)", "określ szkodę spółki i jej związek z działaniem prezesa", "pamiętaj: wyrok zasądzony zostaje na rzecz spółki"]
       }
     ];
 
@@ -1020,6 +1076,19 @@
       "594": "Art. 594 KSH: przewiduje sankcje za naruszenie wybranych obowiązków informacyjnych i rejestrowych osób odpowiedzialnych w spółkach.",
       "595": "Art. 595 KSH: wskazuje dodatkowe sankcje i skutki orzeczenia w sprawach dotyczących naruszeń obowiązków z KSH.",
       "596": "Art. 596 KSH i nast.: przepisy zmieniające, przejściowe i końcowe porządkują wejście w życie kodeksu oraz relacje do wcześniejszych regulacji."
+    });
+
+    Object.assign(articleTexts, {
+      "291": "Art. 291 KSH: jeżeli członkowie zarządu lub rady nadzorczej sp. z o.o. umyślnie lub przez niedbalstwo podali fałszywe dane w oświadczeniu o pokryciu wkładów, odpowiadają wobec wierzycieli spółki solidarnie ze spółką przez trzy lata od rejestracji.",
+      "293": "Art. 293 KSH: członek zarządu, rady nadzorczej, komisji rewizyjnej oraz likwidator spółki z o.o. odpowiada wobec spółki za szkodę wyrządzoną działaniem lub zaniechaniem sprzecznym z prawem lub postanowieniami umowy spółki, chyba że nie ponosi winy. Miernik staranności: wyższy niż ogólny — wynikający z zawodowego charakteru działalności.",
+      "295": "Art. 295 KSH: każdy wspólnik spółki z o.o. może wnieść pozew o naprawienie szkody wyrządzonej spółce (actio pro socio), jeżeli spółka nie wytoczyła powództwa w terminie roku od dnia ujawnienia czynu. Wyrok działa na rzecz spółki.",
+      "300130": "Art. 300^130 KSH: członek zarządu, rady nadzorczej lub rady dyrektorów PSA odpowiada wobec spółki za szkodę wyrządzoną działaniem lub zaniechaniem naruszającym prawo lub postanowienia umowy spółki, chyba że nie ponosi winy — konstrukcja analogiczna do art. 293 KSH.",
+      "300132": "Art. 300^132 KSH: akcjonariusz PSA może wytoczyć powództwo o naprawienie szkody wyrządzonej spółce (actio pro socio) na zasadach analogicznych do art. 295 KSH.",
+      "300133": "Art. 300^133 KSH: jeżeli egzekucja przeciwko PSA okaże się bezskuteczna, członkowie zarządu lub rady dyrektorów odpowiadają solidarnie za jej zobowiązania — analogiczna konstrukcja do art. 299 KSH, z tymi samymi przesłankami obronnymi.",
+      "483": "Art. 483 KSH: członek zarządu, rady nadzorczej oraz likwidator SA odpowiadają wobec spółki za szkodę wyrządzoną działaniem lub zaniechaniem sprzecznym z prawem lub postanowieniami statutu, przy zachowaniu należytej staranności i zasady lojalności wobec spółki.",
+      "484": "Art. 484 KSH: udzielenie absolutorium przez walne zgromadzenie SA obejmuje czynności znane zgromadzeniu w chwili powzięcia uchwały i ogranicza możliwość późniejszego dochodzenia roszczeń za te działania.",
+      "486": "Art. 486 KSH: każdy akcjonariusz lub osoba, której służy inny tytuł uczestnictwa w zyskach SA, może wytoczyć w imieniu spółki powództwo o naprawienie szkody wyrządzonej spółce, jeżeli spółka nie wytoczyła powództwa w ciągu roku od ujawnienia czynu.",
+      "487": "Art. 487 KSH: reguluje tryb actio pro socio w SA — powód działa za spółkę, a ewentualne odszkodowanie zasądzone zostaje na rzecz spółki; przepis normuje też stosunki procesowe i skutki wyroku."
     });
 
     const kshGuideTopics = [
@@ -1242,6 +1311,66 @@
         explanation: "Końcowe przepisy KSH mają mniejsze znaczenie w codziennej analizie typów spółek, ale pomagają zrozumieć wejście kodeksu w życie i przejście ze wcześniejszych regulacji.",
         lawyerView: "Sięgaj do tej części głównie wtedy, gdy kazus dotyczy stanu historycznego, wejścia w życie przepisów albo relacji do poprzednich regulacji.",
         questions: ["Czy stan faktyczny jest historyczny?", "Czy trzeba zastosować przepisy przejściowe?", "Czy późniejsza nowelizacja zmieniła ocenę?"]
+      },
+      {
+        id: "g-zarzad-intro",
+        part: "Odpowiedzialność zarządu",
+        title: "Mapa odpowiedzialności zarządu: trzy relacje",
+        range: "art. 291-295, 299, 300^130-300^133, 483-487 KSH",
+        articles: ["293", "299", "483", "291"],
+        explanation: "Odpowiedzialność zarządu w spółkach kapitałowych należy zawsze analizować w trzech osobnych relacjach: wobec spółki (art. 293 KSH dla sp. z o.o., art. 483 KSH dla SA, art. 300^130 KSH dla PSA), wobec wierzycieli spółki (art. 299 KSH dla sp. z o.o., art. 300^133 KSH dla PSA — brak bezpośredniego odpowiednika w SA) oraz wobec wspólników i akcjonariuszy (actio pro socio z art. 295 KSH, art. 300^132 KSH, art. 486 KSH). Każda relacja ma własne przesłanki i mechanizmy obrony.",
+        lawyerView: "Pierwszym krokiem zawsze jest ustalenie, kto jest wierzycielem roszczenia: spółka, wierzyciel zewnętrzny czy wspólnik. Pomylenie relacji prowadzi do błędnej kwalifikacji normy i złej analizy przesłanek.",
+        questions: ["Kto jest podmiotem dochodzącym roszczenia: spółka, wierzyciel czy wspólnik?", "Jakiego typu spółka kapitałowa wchodzi w grę?", "Czy zachodzi bezskuteczność egzekucji ze spółki?"]
+      },
+      {
+        id: "g-zarzad-spolka",
+        part: "Odpowiedzialność zarządu",
+        title: "Odpowiedzialność wobec spółki: wina, szkoda, staranność",
+        range: "art. 291-293 KSH (sp. z o.o.), art. 300^130 KSH (PSA), art. 483 KSH (SA)",
+        articles: ["293", "300130", "483", "291"],
+        explanation: "Odpowiedzialność wobec spółki jest odpowiedzialnością deliktową na zasadzie winy — ale z podwyższonym miernikiem staranności wynikającym z zawodowego charakteru działalności zarządu. Przesłanki są takie same we wszystkich trzech typach spółek: (1) działanie lub zaniechanie sprzeczne z prawem albo umową/statutem, (2) szkoda spółki, (3) wina, (4) związek przyczynowy. Domniemanie winy ciąży na pozwanym członku zarządu. Istotna różnica: w SA art. 483 KSH explicite wymaga lojalności wobec spółki — standard wyższy niż w sp. z o.o.",
+        lawyerView: "W analizie najpierw oceń, czy doszło do naruszenia prawa lub postanowień umowy/statutu. Następnie sprawdź, czy zarząd może się powołać na business judgment rule — działanie w granicach uzasadnionego ryzyka gospodarczego, w dobrej wierze i w interesie spółki wyłącza odpowiedzialność nawet jeśli decyzja okazała się błędna.",
+        questions: ["Czy działanie naruszało prawo lub umowę/statut spółki?", "Czy istnieje szkoda spółki w związku przyczynowym z tym działaniem?", "Czy zarząd może powołać się na business judgment rule?", "Czy udzielone absolutorium obejmuje działanie będące przedmiotem roszczenia?"]
+      },
+      {
+        id: "g-zarzad-bjr",
+        part: "Odpowiedzialność zarządu",
+        title: "Business Judgment Rule i absolutorium: kiedy zarząd nie odpowiada",
+        range: "art. 293 § 2 KSH, art. 483 § 2 KSH, art. 229 KSH, art. 484 KSH",
+        articles: ["293", "483", "484"],
+        explanation: "Business Judgment Rule (BJR) to zasada, że sąd nie będzie oceniał trafności decyzji biznesowej, jeśli zarząd działał: (1) w granicach uzasadnionego ryzyka gospodarczego, (2) w dobrej wierze, (3) w interesie spółki i (4) z należytą starannością w procesie decyzyjnym. BJR chroni zarząd przed odpowiedzialnością za nieudane, lecz racjonalnie podjęte decyzje biznesowe. Absolutorium (art. 229 KSH dla sp. z o.o., art. 484 KSH dla SA) to drugi mechanizm obronny — uchwała zatwierdzająca działania członka organu ogranicza roszczenia za czyny objęte jej zakresem, ale nie wygasza ich automatycznie i nie obejmuje czynów nieujawnionych zgromadzeniu.",
+        lawyerView: "BJR i absolutorium to dwie odrębne linie obrony. BJR badasz co do przesłanek merytorycznych decyzji, absolutorium — co do zakresu wiedzy zgromadzenia w chwili głosowania. Obie przesłanki mogą kumulować się w tej samej sprawie.",
+        questions: ["Czy zarząd działał w granicach uzasadnionego ryzyka i w dobrej wierze?", "Czy decyzja była poprzedzona rzetelnym procesem informacyjnym?", "Czy absolutorium zostało udzielone i czy obejmuje kwestionowane działanie?", "Czy zgromadzenie znało pełne fakty przy udzielaniu absolutorium?"]
+      },
+      {
+        id: "g-zarzad-osoby",
+        part: "Odpowiedzialność zarządu",
+        title: "Odpowiedzialność wobec wierzycieli: art. 299 KSH krok po kroku",
+        range: "art. 299 KSH (sp. z o.o.), art. 300^133 KSH (PSA)",
+        articles: ["299", "300133"],
+        explanation: "Art. 299 KSH przewiduje solidarną odpowiedzialność członków zarządu sp. z o.o. wobec wierzycieli, gdy egzekucja ze spółki okazała się bezskuteczna. Jest to odpowiedzialność gwarancyjna (nie deliktowa), co oznacza, że wierzyciel nie musi wykazywać winy zarządu — wystarczy wykazać bezskuteczność egzekucji i pełnienie funkcji w czasie powstania długu. Zarząd może się bronić wykazując: (1) we właściwym czasie złożono wniosek o ogłoszenie upadłości, (2) brak winy w niezłożeniu wniosku, (3) wierzyciel nie poniósł szkody mimo niezłożenia wniosku. Art. 300^133 KSH przewiduje analogiczną konstrukcję dla PSA. W SA brak bezpośredniego odpowiednika — wierzyciele SA muszą oprzeć roszczenia wobec zarządu na ogólnych przepisach KC (art. 415 KC) lub prawie upadłościowym.",
+        lawyerView: "Analiza art. 299 KSH przebiega w ściśle określonej kolejności: (1) ustal dług spółki i okres jego powstania, (2) zidentyfikuj skład zarządu w tym czasie, (3) wykaż bezskuteczność egzekucji (tytuł wykonawczy + bezskuteczna egzekucja albo oczywistość bezskuteczności), (4) sprawdź przesłanki obronne — zwłaszcza termin właściwy do złożenia wniosku o upadłość.",
+        questions: ["Czy istnieje tytuł wykonawczy przeciwko spółce?", "Czy egzekucja ze spółki okazała się bezskuteczna?", "Kto pełnił funkcję członka zarządu w czasie powstania długu?", "Czy zarząd złożył wniosek o upadłość we właściwym czasie?", "Czy wierzyciel poniósł szkodę wskutek niezłożenia wniosku?"]
+      },
+      {
+        id: "g-zarzad-wspolnicy",
+        part: "Odpowiedzialność zarządu",
+        title: "Actio pro socio i roszczenia wspólników wobec zarządu",
+        range: "art. 295 KSH (sp. z o.o.), art. 300^132 KSH (PSA), art. 486-487 KSH (SA)",
+        articles: ["295", "300132", "486", "487", "484"],
+        explanation: "Actio pro socio to powództwo wytaczane przez wspólnika lub akcjonariusza w imieniu i na rzecz spółki o naprawienie szkody wyrządzonej spółce przez zarząd, gdy spółka sama tego nie robi. Mechanizm działa identycznie we wszystkich trzech typach kapitałowych: wspólnik/akcjonariusz może wnieść powództwo po bezskutecznym upływie roku od dnia ujawnienia czynu wyrządzającego szkodę. Wyrok zapada na korzyść spółki, a powód nie uzyskuje osobistej korzyści majątkowej. Odróżnić należy actio pro socio (roszczenie spółki dochodzone przez wspólnika) od roszczenia odszkodowawczego wspólnika z jego własnej szkody — to są dwa różne tryby. Absolutorium udzielone zarządowi przed wytoczeniem powództwa może ograniczyć zakres możliwych roszczeń.",
+        lawyerView: "Przy actio pro socio sprawdź trzy warunki: (1) upływ roku od ujawnienia czynu bez działania spółki, (2) legitimację czynną — czy ta konkretna osoba jest wspólnikiem lub akcjonariuszem, (3) czy absolutorium nie obejmuje kwestionowanego działania. Odróżnij też roszczenie spółki od roszczenia wspólnika — ten sam czyn zarządu może rodzić oba typy roszczeń.",
+        questions: ["Czy rok od ujawnienia czynu upłynął bez powództwa spółki?", "Czy powód jest wspólnikiem lub akcjonariuszem legitymowanym czynnie?", "Czy wyrok ma zapaść na rzecz spółki czy na rzecz powoda?", "Czy absolutorium obejmuje kwestionowane działanie zarządu?"]
+      },
+      {
+        id: "g-zarzad-biegly",
+        part: "Odpowiedzialność zarządu",
+        title: "Perspektywa biegłego rewidenta: co badać przy odpowiedzialności zarządu",
+        range: "art. 293, 299, 483 KSH w kontekście badania sprawozdań",
+        articles: ["293", "299", "483", "291"],
+        explanation: "Biegły rewident, badając sprawozdanie finansowe, napotyka zagadnienia odpowiedzialności zarządu w kilku kontekstach: (1) rezerwy i zobowiązania warunkowe — spółka powinna ujawnić i wycenić ryzyko roszczeń z art. 293 lub art. 483 KSH skierowanych wobec niej przez wierzycieli; (2) zdolność do kontynuowania działalności (going concern) — przesłanki do złożenia wniosku o upadłość są kluczowe w ocenie art. 299 KSH; (3) transakcje z podmiotami powiązanymi — mogą stanowić działanie na szkodę spółki rodzące odpowiedzialność zarządu; (4) absolutorium — biegły powinien wiedzieć, czy i w jakim zakresie je udzielono, bo wpływa to na ryzyka rezydualne ujawniane w sprawozdaniu.",
+        lawyerView: "Jako biegły nie oceniasz winy zarządu — to rola sądu. Oceniasz jednak, czy spółka prawidłowo ujawniła i wyceniła ryzyko prawne wynikające z potencjalnych roszczeń wobec zarządu lub zarządu wobec spółki. Pamiętaj: spółka może być zarówno powodem (dochodzi od zarządu naprawienia szkody), jak i pozwanym (wierzyciel pozywa spółkę, a ta może mieć regres do zarządu).",
+        questions: ["Czy spółka ujawniła rezerwy lub zobowiązania warunkowe z tytułu roszczeń wobec zarządu?", "Czy przesłanki do złożenia wniosku o upadłość mogą aktualizować odpowiedzialność zarządu z art. 299 KSH?", "Czy transakcje z podmiotami powiązanymi nie wskazują na działanie zarządu na szkodę spółki?", "Czy zakres udzielonego absolutorium jest adekwatnie ujawniony?"]
       }
     ];
 
@@ -1485,6 +1614,51 @@
         },
         remember: ["Zawsze sprawdź, czy umowa lub statut przewiduje dany tryb umorzenia.", "Umorzenie bez wynagrodzenia wymaga szczególnej podstawy i zgody w odpowiednich przypadkach."],
         flash: ["Co jest skutkiem umorzenia udziału?", "Unicestwienie udziału i zmiana struktury praw wspólników."]
+      },
+      {
+        id: "zarzad-spolka",
+        title: "Odpowiedzialność zarządu wobec spółki",
+        type: "Odpowiedzialność",
+        tags: ["zarząd", "szkoda", "należyta staranność", "business judgment rule"],
+        summary: "Członkowie zarządu spółek kapitałowych odpowiadają wobec własnej spółki za szkodę wyrządzoną naruszeniem prawa lub postanowień umowy/statutu. Kluczowe przesłanki są takie same we wszystkich typach, choć przepisy różnią się detalami — zwłaszcza wyraźnym wymogiem lojalności w SA. Obroną jest business judgment rule i absolutorium.",
+        facts: {
+          "Sp. z o.o.": "Art. 293 KSH: wina, szkoda i naruszenie prawa lub umowy spółki. Domniemanie winy po stronie zarządu. Miernik staranności wyższy niż ogólny.",
+          "PSA": "Art. 300^130 KSH: analogiczna konstrukcja jak w sp. z o.o. Odpowiedzialność za naruszenie prawa lub postanowień umowy PSA.",
+          "SA": "Art. 483 KSH: wina, szkoda, naruszenie prawa lub statutu oraz wymóg lojalności wobec spółki (wyższy standard niż w sp. z o.o.).",
+          "Wyłączenie": "Business judgment rule — działanie w dobrej wierze, w interesie spółki i granicach uzasadnionego ryzyka wyłącza odpowiedzialność. Absolutorium ogranicza roszczenia za znane zgromadzeniu czyny."
+        },
+        remember: ["Domniemanie winy obciąża zarząd — to on musi wykazać brak winy lub BJR.", "Absolutorium nie wygasza roszczeń automatycznie — zależy od zakresu wiedzy zgromadzenia.", "W SA wymóg lojalności jest wyraźnie sformułowany w art. 483 KSH — to dodatkowy element analizy."],
+        flash: ["Na kim spoczywa ciężar dowodu w sprawie z art. 293 KSH?", "Na pozwanym członku zarządu — musi obalić domniemanie winy lub wykazać przesłanki business judgment rule."]
+      },
+      {
+        id: "zarzad-osoby",
+        title: "Odpowiedzialność zarządu wobec osób trzecich",
+        type: "Odpowiedzialność",
+        tags: ["zarząd", "przesłanki egzoneracyjne", "art. 299 KSH", "bezskuteczność egzekucji"],
+        summary: "Wierzyciele spółki z o.o. i PSA mogą dochodzić zaspokojenia od członków zarządu, gdy egzekucja ze spółki okazała się bezskuteczna. To odpowiedzialność gwarancyjna — wina zarządu nie jest przesłanką, lecz zarząd może bronić się wykazując terminowe złożenie wniosku o upadłość lub brak szkody wierzyciela. W SA brak bezpośredniego odpowiednika art. 299 KSH.",
+        facts: {
+          "Sp. z o.o.": "Art. 299 KSH: bezskuteczność egzekucji + pełnienie funkcji w czasie powstania długu → solidarna odpowiedzialność członków zarządu.",
+          "PSA": "Art. 300^133 KSH: identyczna konstrukcja jak art. 299 KSH — bezskuteczność egzekucji z PSA uruchamia odpowiedzialność zarządu / rady dyrektorów.",
+          "SA": "Brak odpowiednika art. 299 KSH. Wierzytelność wobec zarządu SA może wynikać z ogólnych przepisów KC (art. 415) lub prawa upadłościowego.",
+          "Obrona": "Przesłanki egzoneracyjne (art. 299 § 2 KSH): (1) wniosek o upadłość złożony we właściwym czasie, (2) brak winy w niezłożeniu wniosku, (3) wierzyciel nie poniósł szkody."
+        },
+        remember: ["Odpowiedzialność z art. 299 KSH jest gwarancyjna — wina zarządu nie jest przesłanką roszczenia.", "W SA brak art. 299 KSH — nie wolno automatycznie stosować tej normy do spółki akcyjnej.", "Właściwy czas złożenia wniosku o upadłość to pojęcie prawne — biegły rewident może być pomocny przy jego ustalaniu (going concern, test wypłacalności)."],
+        flash: ["Czy wierzyciel sp. z o.o. musi wykazać winę zarządu, powołując się na art. 299 KSH?", "Nie — odpowiedzialność z art. 299 KSH jest gwarancyjna. Wierzyciel wykazuje bezskuteczność egzekucji i pełnienie funkcji; ciężar obalenia spoczywa na zarządzie."]
+      },
+      {
+        id: "zarzad-wspolnicy",
+        title: "Odpowiedzialność zarządu wobec wspólników",
+        type: "Odpowiedzialność",
+        tags: ["zarząd", "actio pro socio", "absolutorium", "wspólnicy"],
+        summary: "Wspólnicy i akcjonariusze mogą dochodzić naprawienia szkody wyrządzonej spółce przez zarząd wtedy, gdy spółka sama tego nie robi — jest to actio pro socio. Wyrok zapada na rzecz spółki. Absolutorium udzielone zarządowi ogranicza zakres możliwych roszczeń za czyny znane zgromadzeniu. Mechanizm istnieje w sp. z o.o. (art. 295 KSH), PSA (art. 300^132 KSH) i SA (art. 486-487 KSH).",
+        facts: {
+          "Sp. z o.o.": "Art. 295 KSH: powództwo wspólnika po bezskutecznym upływie roku od ujawnienia czynu. Wyrok zapada na rzecz spółki.",
+          "PSA": "Art. 300^132 KSH: actio pro socio akcjonariusza PSA — analogiczna konstrukcja jak art. 295 KSH.",
+          "SA": "Art. 486-487 KSH: actio pro socio akcjonariusza SA po roku od ujawnienia czynu. Art. 487 KSH reguluje szczegóły procesowe.",
+          "Absolutorium": "Art. 229 KSH (sp. z o.o.) i art. 484 KSH (SA): uchwała zatwierdzająca wykonanie obowiązków ogranicza roszczenia za działania nią objęte — nie dotyczy czynów nieujawnionych zgromadzeniu."
+        },
+        remember: ["Actio pro socio to powództwo w imieniu i na rzecz spółki — powód nie uzyskuje osobistej korzyści majątkowej.", "Rok czeka się na spółkę; dopiero po jego upływie wspólnik może działać.", "Absolutorium ogranicza, ale nie wygasza automatycznie roszczeń — kluczowy jest zakres wiedzy zgromadzenia przy głosowaniu."],
+        flash: ["Na czyją rzecz zapada wyrok w actio pro socio wytoczonej przez wspólnika sp. z o.o.?", "Na rzecz spółki — nie wspólnika. Odszkodowanie wchodzi do majątku spółki."]
       }
     ];
 
@@ -1501,7 +1675,12 @@
       { q: "Co powinno znaleźć się w analizie art. 299 KSH?", a: "Bezskuteczność egzekucji przeciwko spółce", o: ["Bezskuteczność egzekucji przeciwko spółce", "Wyłącznie fakt bycia wspólnikiem", "Zawsze uchwała walnego zgromadzenia"] },
       { q: "Jaki jest zasadniczy skutek przekształcenia?", a: "Kontynuacja praw i obowiązków", o: ["Wygaśnięcie wszystkich umów", "Kontynuacja praw i obowiązków", "Automatyczna likwidacja majątku"] },
       { q: "Co jest pierwszym krokiem przy analizie spółki komandytowej?", a: "Ustalenie roli wspólnika", o: ["Ustalenie roli wspólnika", "Sprawdzenie rady nadzorczej", "Założenie braku odpowiedzialności wszystkich osób"] },
-      { q: "Który dokument jest centralny przy połączeniu spółek?", a: "Plan połączenia", o: ["Plan połączenia", "Regulamin pracy", "Protokół zdawczo-odbiorczy"] }
+      { q: "Który dokument jest centralny przy połączeniu spółek?", a: "Plan połączenia", o: ["Plan połączenia", "Regulamin pracy", "Protokół zdawczo-odbiorczy"] },
+      { q: "Na jakiej zasadzie opiera się odpowiedzialność zarządu z art. 299 KSH?", a: "Odpowiedzialności gwarancyjnej (bez konieczności wykazania winy)", o: ["Odpowiedzialności gwarancyjnej (bez konieczności wykazania winy)", "Winy umyślnej zarządu", "Ryzyka prowadzenia działalności"] },
+      { q: "Co wyłącza odpowiedzialność zarządu wobec spółki z o.o. na podstawie business judgment rule?", a: "Działanie w dobrej wierze, w interesie spółki i granicach uzasadnionego ryzyka", o: ["Działanie w dobrej wierze, w interesie spółki i granicach uzasadnionego ryzyka", "Udzielenie absolutorium przez zgromadzenie", "Brak szkody po stronie wierzycieli"] },
+      { q: "Czy art. 299 KSH stosuje się do odpowiedzialności zarządu spółki akcyjnej wobec wierzycieli?", a: "Nie — w SA brak bezpośredniego odpowiednika art. 299 KSH", o: ["Nie — w SA brak bezpośredniego odpowiednika art. 299 KSH", "Tak — przepis stosuje się do wszystkich spółek kapitałowych", "Tak, ale tylko gdy SA jest w stanie upadłości"] },
+      { q: "Na czyją rzecz zapada wyrok w sprawie wytoczonej przez wspólnika w trybie actio pro socio?", a: "Na rzecz spółki", o: ["Na rzecz spółki", "Na rzecz wspólnika wnoszącego powództwo", "Na rzecz wszystkich wspólników proporcjonalnie"] },
+      { q: "Jaki jest skutek absolutorium udzielonego przez walne zgromadzenie członkowi zarządu SA?", a: "Ogranicza roszczenia za działania znane zgromadzeniu w chwili uchwały", o: ["Ogranicza roszczenia za działania znane zgromadzeniu w chwili uchwały", "Całkowicie wygasza wszelkie roszczenia spółki wobec zarządu", "Nie ma żadnego skutku dla odpowiedzialności cywilnej"] }
     ];
 
     let activeId = cards[0].id;
