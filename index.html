@@ -111,10 +111,13 @@
     }
 
     body.guide-page .toolbar,
+    body.krs-page .toolbar,
+    body.krs-page aside,
     body.guide-page aside {
       display: none;
     }
 
+    body.krs-page .grid,
     body.guide-page .grid {
       grid-template-columns: 1fr;
     }
@@ -551,6 +554,121 @@
       transform: translateY(0);
     }
 
+    .krs-form {
+      display: grid;
+      grid-template-columns: minmax(150px, .35fr) minmax(0, 1fr) auto;
+      gap: 10px;
+      margin: 16px 0;
+      align-items: end;
+    }
+
+    .krs-field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .krs-field label {
+      font-size: .82rem;
+      font-weight: 750;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .krs-form input,
+    .krs-form select,
+    .krs-json textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: white;
+    }
+
+    .krs-form input,
+    .krs-form select {
+      min-height: 44px;
+      padding: 0 12px;
+    }
+
+    .krs-json {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .krs-json textarea {
+      min-height: 120px;
+      padding: 12px;
+      resize: vertical;
+      font: .9rem Consolas, monospace;
+    }
+
+    .primary-btn,
+    .link-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      border-radius: 8px;
+      border: 1px solid var(--accent);
+      background: var(--accent);
+      color: #fff;
+      padding: 0 14px;
+      font-weight: 750;
+      text-decoration: none;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .link-btn.secondary {
+      background: #fff;
+      color: var(--accent);
+    }
+
+    .krs-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .krs-result {
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .krs-section {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcfd;
+      padding: 14px;
+    }
+
+    .krs-data {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .94rem;
+    }
+
+    .krs-data th,
+    .krs-data td {
+      border-top: 1px solid var(--line);
+      padding: 9px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .krs-data tr:first-child th,
+    .krs-data tr:first-child td {
+      border-top: 0;
+    }
+
+    .krs-data th {
+      width: 220px;
+      color: var(--muted);
+      font-weight: 750;
+    }
+
     footer {
       color: var(--muted);
       font-size: .9rem;
@@ -558,17 +676,20 @@
     }
 
     body.guide-page .modes,
+    body.krs-page .modes,
     body.guide-page .toolbar,
+    body.krs-page .toolbar,
     body.guide-page .side {
       display: none;
     }
 
+    body.krs-page .grid,
     body.guide-page .grid {
       grid-template-columns: 1fr;
     }
 
     @media (max-width: 860px) {
-      .toolbar, .grid, .facts, .compare, .guide-tools, .guide-layout {
+      .toolbar, .grid, .facts, .compare, .guide-tools, .guide-layout, .krs-form {
         grid-template-columns: 1fr;
       }
 
@@ -594,6 +715,7 @@
     <div class="page-switch" aria-label="Wybór strony">
       <button class="page-btn active" data-page="review">Powtórka</button>
       <button class="page-btn" data-page="guide">Przewodnik KSH</button>
+      <button class="page-btn" data-page="krs">KRS i RDF</button>
     </div>
 
     <div class="toolbar">
@@ -1701,6 +1823,13 @@
     let quizIndex = 0;
     let caseIndex = 0;
     let activeGuideId = kshGuideTopics[0].id;
+    let krsState = {
+      type: "krs",
+      query: "",
+      status: "idle",
+      error: "",
+      data: null
+    };
 
     const tabs = document.querySelector("#tabs");
     const content = document.querySelector("#content");
@@ -1717,6 +1846,103 @@
 
     function escapeAttr(value) {
       return String(value).replace(/"/g, "&quot;");
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function normalizeKrs(value) {
+      const digits = String(value || "").replace(/\D/g, "");
+      return digits ? digits.padStart(10, "0") : "";
+    }
+
+    function plainValue(value) {
+      if (value === null || value === undefined || value === "") return "Brak danych w odpisie";
+      if (Array.isArray(value)) return value.length ? value.map(plainValue).join("; ") : "Brak danych w odpisie";
+      if (typeof value === "object") {
+        const entries = Object.entries(value).filter(([, item]) => item !== null && item !== undefined && item !== "");
+        return entries.length
+          ? entries.map(([key, item]) => `${key}: ${plainValue(item)}`).join("; ")
+          : "Brak danych w odpisie";
+      }
+      return String(value).trim() || "Brak danych w odpisie";
+    }
+
+    function getPath(source, path) {
+      return path.reduce((value, key) => value?.[key], source);
+    }
+
+    function findDeep(source, matcher) {
+      const results = [];
+      const walk = value => {
+        if (!value || typeof value !== "object") return;
+        if (Array.isArray(value)) {
+          value.forEach(walk);
+          return;
+        }
+        Object.entries(value).forEach(([key, item]) => {
+          if (matcher(key, item)) results.push(item);
+          walk(item);
+        });
+      };
+      walk(source);
+      return results;
+    }
+
+    function firstDeep(source, names) {
+      const wanted = names.map(name => name.toLowerCase());
+      return findDeep(source, key => wanted.includes(key.toLowerCase()))[0];
+    }
+
+    function firstDeepIncludes(source, parts) {
+      const wanted = parts.map(part => part.toLowerCase());
+      return findDeep(source, key => {
+        const normalized = key.toLowerCase();
+        return wanted.every(part => normalized.includes(part));
+      })[0];
+    }
+
+    function dataRow(label, value) {
+      return `<tr><th>${escapeHtml(label)}</th><td>${escapeHtml(plainValue(value))}</td></tr>`;
+    }
+
+    function dataTable(rows) {
+      return `<table class="krs-data"><tbody>${rows.map(([label, value]) => dataRow(label, value)).join("")}</tbody></table>`;
+    }
+
+    function krsSearchPayload(type, query) {
+      const cleanQuery = query.trim();
+      return {
+        rejestr: ["P", "S"],
+        podmiot: {
+          krs: type === "krs" ? normalizeKrs(cleanQuery) : null,
+          nip: type === "nip" ? cleanQuery.replace(/\D/g, "") : null,
+          regon: null,
+          nazwa: type === "name" ? cleanQuery : null,
+          wojewodztwo: null,
+          powiat: null,
+          gmina: null,
+          miejscowosc: null,
+          dokladnaNazwa: false
+        },
+        status: {
+          czyOpp: null,
+          czyWpisDotyczacyPostepowaniaUpadlosciowego: null,
+          dataPrzyznaniaStatutuOppOd: null,
+          dataPrzyznaniaStatutuOppDo: null
+        },
+        paginacja: {
+          liczbaElementowNaStronie: 20,
+          maksymalnaLiczbaWynikow: 100,
+          numerStrony: 1
+        }
+      };
     }
 
     function lawTip(label) {
@@ -1988,12 +2214,288 @@
       progressBar.style.width = `${(seen.size / cards.length) * 100}%`;
     }
 
+    function renderKrsEmpty() {
+      return `
+        <div class="callout">
+          <strong>Zakres:</strong> publiczne API KRS udostępnia odpis aktualny po numerze KRS. Wyszukiwanie po nazwie albo NIP wymaga osobnego indeksu, którego ten OpenAPI nie publikuje.
+        </div>
+      `;
+    }
+
+    function renderKrsNotice() {
+      const label = krsState.type === "name" ? "nazwy" : "NIP";
+      return `
+        <div class="krs-result">
+          <div class="krs-section">
+            <h3>Wyszukiwanie według ${label}</h3>
+            <p class="summary">Nie znaleziono podmiotów dla podanego kryterium. Zmień frazę lub użyj numeru KRS.</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderKrsResults() {
+      const result = krsState.data || {};
+      const items = result.listaPodmiotow || [];
+      return `
+        <div class="krs-result">
+          <div class="krs-section">
+            <h3>Wyniki wyszukiwania</h3>
+            <p class="summary">Znaleziono: ${escapeHtml(result.liczbaPodmiotow ?? items.length)}. Wybierz podmiot, aby pobrać odpis aktualny i dane szczegółowe.</p>
+            <table class="krs-data">
+              <thead>
+                <tr>
+                  <th>KRS</th>
+                  <th>Nazwa</th>
+                  <th>Miejscowość</th>
+                  <th>Rejestr</th>
+                  <th>Akcja</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${items.map(item => {
+                  const krs = normalizeKrs(item.numer || item.krs || "");
+                  return `
+                    <tr>
+                      <td>${escapeHtml(krs)}</td>
+                      <td>${escapeHtml(item.nazwa || item.dokladnaNazwa || "Brak danych")}</td>
+                      <td>${escapeHtml(item.miejscowosc || "Brak danych")}</td>
+                      <td>${escapeHtml(item.typRejestru || "Brak danych")}</td>
+                      <td><button class="primary-btn krs-load" data-krs="${escapeAttr(krs)}">Pobierz dane</button></td>
+                    </tr>
+                  `;
+                }).join("")}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderKrsJsonImport() {
+      return `
+        <form class="krs-json krs-section" id="krsJsonForm">
+          <h3>Wczytaj JSON odpisu</h3>
+          <textarea id="krsJsonInput" placeholder='{"odpis": {...}}'></textarea>
+          <button class="primary-btn" type="submit">Pokaż dane z JSON</button>
+        </form>
+      `;
+    }
+
+    function renderKrsData() {
+      const odpis = krsState.data?.odpis || {};
+      const header = odpis.naglowekA || {};
+      const dane = odpis.dane || {};
+      const dzial1 = dane.dzial1 || {};
+      const dzial2 = dane.dzial2 || {};
+      const dzial3 = dane.dzial3 || {};
+      const danePodmiotu = dzial1.danePodmiotu || {};
+      const identifiers = danePodmiotu.identyfikatory || {};
+      const representation = dzial2.reprezentacja || {};
+      const supervisory = dzial2.organNadzoru || firstDeepIncludes(dzial2, ["nadzor"]);
+      const shareholders = firstDeep(dzial1, ["wspolnicy", "akcjonariusze", "jedynyWspolnik"]);
+      const capital = firstDeepIncludes(dzial1, ["kapital"]) || firstDeepIncludes(dane, ["kapital"]);
+      const proxies = firstDeep(dzial2, ["prokurenci", "prokura"]);
+      const financialMentions = dzial3.wzmiankiOZlozonychDokumentach || firstDeepIncludes(dzial3, ["wzmianki"]);
+      const financialYear = dzial3.informacjaODniuKonczacymRokObrotowy || firstDeepIncludes(dzial3, ["rok", "obrotowy"]);
+
+      return `
+        <div class="krs-result">
+          <div class="krs-section">
+            <h3>Dane podstawowe</h3>
+            ${dataTable([
+              ["Nazwa", danePodmiotu.nazwa],
+              ["Forma prawna", danePodmiotu.formaPrawna],
+              ["KRS", header.numerKRS],
+              ["NIP", identifiers.nip],
+              ["REGON", identifiers.regon],
+              ["Rejestr", header.rejestr],
+              ["Data rejestracji w KRS", header.dataRejestracjiWKRS],
+              ["Stan danych na dzień", header.stanZDnia],
+              ["Ostatni wpis", `${plainValue(header.numerOstatniegoWpisu)} / ${plainValue(header.dataOstatniegoWpisu)}`],
+              ["Sąd rejestrowy", header.oznaczenieSaduDokonujacegoOstatniegoWpisu]
+            ])}
+          </div>
+          <div class="krs-section">
+            <h3>Zarząd i reprezentacja</h3>
+            ${dataTable([
+              ["Organ reprezentacji", representation.nazwaOrganu],
+              ["Sposób reprezentacji", representation.sposobReprezentacji],
+              ["Skład", representation.sklad]
+            ])}
+          </div>
+          <div class="krs-section">
+            <h3>Rada nadzorcza / organ nadzoru</h3>
+            ${dataTable([["Dane z odpisu", supervisory]])}
+          </div>
+          <div class="krs-section">
+            <h3>Udziałowcy / wspólnicy / akcjonariusze</h3>
+            ${dataTable([["Dane z odpisu", shareholders]])}
+          </div>
+          <div class="krs-section">
+            <h3>Kapitał zakładowy</h3>
+            ${dataTable([["Dane z odpisu", capital]])}
+          </div>
+          <div class="krs-section">
+            <h3>Prokurenci</h3>
+            ${dataTable([["Dane z odpisu", proxies]])}
+          </div>
+          <div class="krs-section">
+            <h3>Informacje finansowe</h3>
+            ${dataTable([
+              ["Wzmianki o dokumentach finansowych", financialMentions],
+              ["Dzień kończący rok obrotowy", financialYear]
+            ])}
+            <div class="callout"><strong>RDF:</strong> oficjalny publiczny OpenAPI KRS nie udostępnia w tej dokumentacji endpointu do pobrania listy dokumentów RDF po nazwie, NIP albo KRS. Widoczne dane finansowe pochodzą z działu 3 odpisu KRS.</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderKrs() {
+      const query = escapeAttr(krsState.query);
+      content.innerHTML = `
+        <h2>KRS i dokumenty finansowe</h2>
+        <p class="summary">Wyszukaj podmiot w KRS i pobierz odpis aktualny bez opuszczania aplikacji.</p>
+        <form class="krs-form" id="krsForm">
+          <div class="krs-field">
+            <label for="krsType">Kryterium</label>
+            <select id="krsType">
+              <option value="krs" ${krsState.type === "krs" ? "selected" : ""}>KRS</option>
+              <option value="nip" ${krsState.type === "nip" ? "selected" : ""}>NIP</option>
+              <option value="name" ${krsState.type === "name" ? "selected" : ""}>Nazwa</option>
+            </select>
+          </div>
+          <div class="krs-field">
+            <label for="krsQuery">Wartość</label>
+            <input id="krsQuery" value="${query}" placeholder="np. 0000123558">
+          </div>
+          <button class="primary-btn" type="submit">Szukaj</button>
+        </form>
+        ${krsState.status === "loading" ? "<div class='callout'><strong>Pobieranie:</strong> trwa odczyt danych z API KRS.</div>" : ""}
+        ${krsState.status === "error" ? `<div class="callout"><strong>Błąd:</strong> ${escapeHtml(krsState.error)}</div>` : ""}
+        ${krsState.status === "notice" ? renderKrsNotice() : ""}
+        ${krsState.status === "results" ? renderKrsResults() : ""}
+        ${krsState.status === "ready" ? renderKrsData() : ""}
+        ${krsState.status === "idle" ? renderKrsEmpty() : ""}
+        ${krsState.status !== "ready" ? renderKrsJsonImport() : ""}
+      `;
+    }
+
+    async function handleKrsSearch() {
+      const type = document.querySelector("#krsType").value;
+      const query = document.querySelector("#krsQuery").value.trim();
+      krsState = { type, query, status: "loading", error: "", data: null };
+      renderKrs();
+
+      if (!query) {
+        krsState = { type, query, status: "error", error: "Podaj nazwę, NIP albo numer KRS.", data: null };
+        renderKrs();
+        return;
+      }
+
+      if (type !== "krs") {
+        if (type === "name") {
+          const letters = query.replace(/[^a-zA-Z0-9ąćęłńóśźżĄĆĘŁŃÓŚŹŻ ]/g, "").trim();
+          if (letters.length < 3) {
+            krsState = { type, query, status: "error", error: "Nazwa musi mieć minimum 3 znaki niebędące znakami specjalnymi.", data: null };
+            renderKrs();
+            return;
+          }
+        }
+        if (type === "nip" && query.replace(/\D/g, "").length !== 10) {
+          krsState = { type, query, status: "error", error: "NIP powinien mieć 10 cyfr.", data: null };
+          renderKrs();
+          return;
+        }
+
+        try {
+          const response = await fetch("/api/search-krs/wyszukiwarka/krs", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(krsSearchPayload(type, query))
+          });
+          if (!response.ok) throw new Error(`API wyszukiwarki KRS zwróciło status ${response.status}.`);
+          const data = await response.json();
+          const items = data.listaPodmiotow || [];
+          krsState = { type, query, status: items.length ? "results" : "notice", error: "", data };
+        } catch (error) {
+          krsState = { type, query, status: "error", error: error.message || "Nie udało się wyszukać podmiotu.", data: null };
+        }
+        renderKrs();
+        return;
+      }
+
+      const krs = normalizeKrs(query);
+      if (krs.length !== 10) {
+        krsState = { type, query, status: "error", error: "Numer KRS powinien zawierać cyfry; aplikacja uzupełnia zera do 10 znaków.", data: null };
+        renderKrs();
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/krs/OdpisAktualny/${krs}?rejestr=P&format=json`);
+        if (response.status === 404) throw new Error("Nie znaleziono podmiotu w rejestrze przedsiębiorców.");
+        if (!response.ok) throw new Error(`API KRS zwróciło status ${response.status}.`);
+        const data = await response.json();
+        krsState = { type, query: krs, status: "ready", error: "", data };
+      } catch (error) {
+        krsState = {
+          type,
+          query: krs,
+          status: "error",
+          error: `${error.message || "Nie udało się pobrać odpisu."} Sprawdź, czy aplikacja działa przez lokalny serwer z proxy, a nie przez bezpośrednie otwarcie pliku HTML.`,
+          data: null
+        };
+      }
+      renderKrs();
+    }
+
+    async function loadKrsByNumber(krs) {
+      krsState = { type: "krs", query: krs, status: "loading", error: "", data: null };
+      renderKrs();
+      try {
+        const response = await fetch(`/api/krs/OdpisAktualny/${normalizeKrs(krs)}?rejestr=P&format=json`);
+        if (response.status === 404) throw new Error("Nie znaleziono podmiotu w rejestrze przedsiębiorców.");
+        if (!response.ok) throw new Error(`API KRS zwróciło status ${response.status}.`);
+        const data = await response.json();
+        krsState = { type: "krs", query: normalizeKrs(krs), status: "ready", error: "", data };
+      } catch (error) {
+        krsState = { type: "krs", query: krs, status: "error", error: error.message || "Nie udało się pobrać odpisu.", data: null };
+      }
+      renderKrs();
+    }
+
+    function handleKrsJsonImport() {
+      const raw = document.querySelector("#krsJsonInput").value.trim();
+      if (!raw) {
+        krsState = { ...krsState, status: "error", error: "Wklej treść JSON odpisu KRS.", data: null };
+        renderKrs();
+        return;
+      }
+      try {
+        const data = JSON.parse(raw);
+        if (!data.odpis) throw new Error("JSON nie zawiera pola odpis.");
+        const krs = data.odpis?.naglowekA?.numerKRS || krsState.query;
+        krsState = { type: "krs", query: krs, status: "ready", error: "", data };
+      } catch (error) {
+        krsState = { ...krsState, status: "error", error: error.message || "Nie udało się odczytać JSON.", data: null };
+      }
+      renderKrs();
+    }
+
     function render() {
       document.body.classList.toggle("guide-page", currentPage === "guide");
+      document.body.classList.toggle("krs-page", currentPage === "krs");
       pageButtons.forEach(btn => btn.classList.toggle("active", btn.dataset.page === currentPage));
 
       if (currentPage === "guide") {
         renderGuide();
+        return;
+      }
+
+      if (currentPage === "krs") {
+        renderKrs();
         return;
       }
 
@@ -2035,11 +2537,17 @@
     });
 
     content.addEventListener("click", event => {
+      if (event.target.closest("#nextCase")) {
+        caseIndex++;
+        renderCase();
+        return;
+      }
+
       const answer = event.target.closest(".answer");
-      if (answer) {
+      if (answer?.dataset.answer) {
         const item = questions[quizIndex % questions.length];
         const ok = answer.dataset.answer === item.a;
-        document.querySelectorAll(".answer").forEach(btn => {
+        document.querySelectorAll(".answer[data-answer]").forEach(btn => {
           btn.disabled = true;
           if (btn.dataset.answer === item.a) btn.classList.add("good");
         });
@@ -2050,15 +2558,24 @@
           renderQuiz();
         }, 1100);
       }
-      if (event.target.closest("#nextCase")) {
-        caseIndex++;
-        renderCase();
-      }
+
       const guideButton = event.target.closest(".guide-topic");
       if (guideButton) {
         activeGuideId = guideButton.dataset.guideId;
         renderGuide();
       }
+
+      const krsLoadButton = event.target.closest(".krs-load");
+      if (krsLoadButton) {
+        loadKrsByNumber(krsLoadButton.dataset.krs);
+      }
+    });
+
+    content.addEventListener("submit", event => {
+      if (!event.target.matches("#krsForm, #krsJsonForm")) return;
+      event.preventDefault();
+      if (event.target.matches("#krsForm")) handleKrsSearch();
+      if (event.target.matches("#krsJsonForm")) handleKrsJsonImport();
     });
 
     content.addEventListener("change", event => {
